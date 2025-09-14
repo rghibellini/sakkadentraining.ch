@@ -1,0 +1,599 @@
+<button class="icon-btn logout-btn" id="logoutBtn">
+    <img src="images/logout.png" class="icon" alt="Logout">
+</button>
+<button id="exitGameBtn" class="icon-btn"
+    style="display: none; position: absolute; top: 1vh; right: 1vw; z-index: 2002;">
+    Verlassen
+</button>
+
+<div id="backgroundLayer"></div>
+<div id="trialProgressBar" class="progress-bar top-bar">
+    <div class="progress-fill"></div>
+</div>
+<div id="mainContent" class="main-content">
+    <img id="logoMain" class="logo" src="images/logo.png" alt="Logo">
+    <h1 class="title">Sakkaden Training</h1>
+    <p id="activeProfile" class="author-text">Profil: Kein Profil ausgewählt.</p>
+    <button id="startBtn" class="btn btn--primary"
+        style="margin:2vh auto; font-size:clamp(16px,2vw,24px);">Start</button>
+    <button id="instructionsBtn" class="btn btn--ghost" style="margin: 1vh auto;">
+        Anleitung <span class="arrow-down">↓</span>
+    </button>
+    <p class="author-text">von Dr. phil. Romain Ghibellini</p>
+    <p class="author-text">Version 1.5</p>
+    <button class="icon-btn data-btn" id="dataBtn">
+        <img src="images/data.png" class="icon" alt="Daten">
+    </button>
+    <div id="gameArea">
+        <canvas id="oksCanvas"></canvas>
+        <div id="fixationDot"></div>
+        <div id="target"></div>
+    </div>
+</div>
+
+<div id="settingsOverlay" class="settings-overlay" style="display: none;">
+    <div class="settings-panel-centered">
+        <button id="closeSettingsPanel" class="close-button">✖</button> <!-- OUTSIDE of settings-columns -->
+        <div class="settings-content"> <!-- this must wrap both columns -->
+            <div class="settings-columns">
+                <!-- LEFT column -->¨
+                <div class="settings-column-left">
+                    <h3>Grundeinstellungen:</h3>
+                    <div class="setting-group" id="quadrantGridGroup">
+                        <div class="setting">
+                            <label class="bold">Quadranten:</label>
+                            <div class="checkbox-grid">
+                                <div class="grid-row">
+                                    <div class="checkbox-item"><input type="checkbox" id="square1-1" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square1-2" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square1-3" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square1-4" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square1-5" checked></div>
+                                </div>
+                                <div class="grid-row">
+                                    <div class="checkbox-item"><input type="checkbox" id="square2-1" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square2-2" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square2-3" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square2-4" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square2-5" checked></div>
+                                </div>
+                                <div class="grid-row">
+                                    <div class="checkbox-item"><input type="checkbox" id="square3-1" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square3-2" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square3-3" checked
+                                            style="display: none;" disabled></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square3-4" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square3-5" checked></div>
+                                </div>
+                                <div class="grid-row">
+                                    <div class="checkbox-item"><input type="checkbox" id="square4-1" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square4-2" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square4-3" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square4-4" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square4-5" checked></div>
+                                </div>
+                                <div class="grid-row">
+                                    <div class="checkbox-item"><input type="checkbox" id="square5-1" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square5-2" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square5-3" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square5-4" checked></div>
+                                    <div class="checkbox-item"><input type="checkbox" id="square5-5" checked></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Background + OKS -->
+                    <div class="setting-group" id="hintergrundGroup">
+                        <div class="setting">
+                            <div class="checkbox-item with-spacing">
+                                <input type="checkbox" id="background">
+                                <span class="bold">Hintergrund</span>
+                            </div>
+                            <div class="checkbox-group" id="backgroundTypeGroup" style="display: none;">
+                                <div class="checkbox-item">
+                                    <input type="radio" name="backgroundType" id="backgroundColorful" value="colorful"
+                                        checked>
+                                    <span>Farbe</span>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="radio" name="backgroundType" id="backgroundBlackAndWhite"
+                                        value="blackandwhite">
+                                    <span>Schwarz-Weiss</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group" id="oksGroup">
+                        <div class="setting">
+                            <div class="checkbox-item with-spacing">
+                                <input type="checkbox" id="oks">
+                                <span class="bold">OKS</span>
+                            </div>
+                            <div class="checkbox-group" id="oksDirectionGroup" style="display: none;">
+                                <div class="checkbox-item">
+                                    <input type="radio" name="oksDirection" id="oksLeft" value="left" checked>
+                                    <span>Links</span>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="radio" name="oksDirection" id="oksRight" value="right">
+                                    <span>Rechts</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Global Settings (OKS speed, OKS dot number, etc.) -->
+                    <div class="setting-group" id="geschwOKSGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Geschw. OKS (0-1):</span>
+                                <input type="number" id="oksSpeed" value="0.5" min="0" max="1" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group" id="anzahlOKSPunkteGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Anzahl OKS Punkte:</span>
+                                <input type="number" id="oksNumDots" value="40" min="1" max="100">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group" id="grosseOKSGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Grösse OKS (1-100):</span>
+                                <input type="number" id="oksDotSize" value="10" min="1" max="100">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group" id="seitenverhaltnisGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Seitenverhältnis:</span>
+                                <select id="aspectRatio" class="input-select">
+                                    <option value="800x600">800x600</option>
+                                    <option value="1920x1080" selected>1920x1080</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT column -->
+                <div class="settings-column-right">
+                    <h3>Modus Einstellungen:</h3>
+                    <!-- Fixation Dot toggle -->
+                    <div class="setting-group" id="fixationDotGroup">
+                        <div class="checkbox-item with-spacing">
+                            <input type="checkbox" id="fixationDotToggle" checked>
+                            <span class="bold">Fixationspunkt</span>
+                        </div>
+                    </div>
+                    <!-- Punktezahl radio buttons -->
+                    <div class="setting-group" id="punktezahlGroup">
+                        <div class="setting">
+                            <label class="bold">Punktezahl:</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="radio" name="punktezahl" id="punktezahlVier" value="vier" checked>
+                                    <span>Vier</span>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="radio" name="punktezahl" id="punktezahlFünf" value="fünf">
+                                    <span>Fünf</span>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="radio" name="punktezahl" id="punktezahlSechs" value="sechs">
+                                    <span>Sechs</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- All mode-specific settings like Trials, Duration, Speeds etc. -->
+                    <!-- Aufwärmen -->
+                    <div class="setting-group" id="dotSpeedAufwaermenGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Geschw. (0-1):</span>
+                                <input type="number" id="dotSpeedAufwaermen" value="0.5" min="0" max="1" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Normal -->
+                    <div class="setting-group" id="trialsNormalGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Anzahl Durchgänge:</span>
+                                <input type="number" id="trialsNormal" value="10" min="1" max="100">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group" id="durationNormalGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Stimulus Dauer (s):</span>
+                                <input type="number" id="durationNormal" value="15" min="1" max="999999">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aufwärmen 2 -->
+                    <div class="setting-group" id="durationAufwaermen2Group">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Dauer (s):</span>
+                                <input type="number" id="durationAufwaermen2" value="30" min="1" max="999999">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Folgen -->
+                    <div class="setting-group" id="trialsFolgenGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Anzahl Durchgänge:</span>
+                                <input type="number" id="trialsFolgen" value="10" min="1" max="100">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group" id="durationFolgenGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Stimulus Dauer (s):</span>
+                                <input type="number" id="durationFolgen" value="15" min="1" max="999999">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group" id="dotSpeedFolgenGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Geschw. (0-1):</span>
+                                <input type="number" id="dotSpeedFolgen" value="0.5" min="0" max="1" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Punkte -->
+                    <div class="setting-group" id="trialsPunkteGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Anzahl Durchgänge:</span>
+                                <input type="number" id="trialsPunkte" value="10" min="1" max="100">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group" id="durationPunkteGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Stimulus Dauer (s):</span>
+                                <input type="number" id="durationPunkte" value="15" min="1" max="999999">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group" id="antwortfensterPunkteGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Antwortfenster (s):</span>
+                                <input type="number" id="antwortfensterPunkte" value="5" min="1" max="999999">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group" id="dotSpeedPunkteGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Geschw. (0-1):</span>
+                                <input type="number" id="dotSpeedPunkte" value="0.5" min="0" max="1" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vergleich -->
+                    <div class="setting-group" id="trialsVergleichGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Anzahl Durchgänge:</span>
+                                <input type="number" id="trialsVergleich" value="10" min="1" max="100">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group" id="durationVergleichGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Stimulus Dauer (s):</span>
+                                <input type="number" id="durationVergleich" value="15" min="1" max="999999">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group" id="antwortfensterVergleichGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Antwortfenster (s):</span>
+                                <input type="number" id="antwortfensterVergleich" value="5" min="1" max="999999">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-group" id="vergleichGridGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Gitter:</span>
+                                <div class="grid-inputs">
+                                    <input type="number" id="vergleichColumns" value="3" min="1" max="10"
+                                        placeholder="Spalten">
+                                    <span>X</span>
+                                    <input type="number" id="vergleichRows" value="3" min="1" max="10"
+                                        placeholder="Zeilen">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reihenfolge -->
+                    <div class="setting-group" id="trialsReihenfolgeGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Anzahl Durchgänge:</span>
+                                <input type="number" id="trialsReihenfolge" value="10" min="1" max="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group" id="numCheesesReihenfolgeGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Anzahl Käse (1 - 20):</span>
+                                <input type="number" id="numCheesesReihenfolge" value="6" min="1" max="20">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fangen Mode Settings -->
+                    <div class="setting-group" id="trialsFangenGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Anzahl Durchgänge:</span>
+                                <input type="number" id="trialsFangen" value="10" min="1" max="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group" id="torGroup">
+                        <div class="setting">
+                            <label for="torSelect" class="bold">Tor:</label>
+                            <select id="torSelect" class="input-select">
+                                <option value="Links">Links</option>
+                                <option value="Rechts">Rechts</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-group" id="goalWidthGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Tor Breite (%):</span>
+                                <input type="number" id="goalWidth" value="20" min="10" max="50">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group" id="geschwindigkeitGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Geschwindigkeit (0 - 1):</span>
+                                <input type="number" id="geschwindigkeit" value="0.5" min="0" max="1" step="0.01">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Schwimmen Mode Settings -->
+                    <div class="setting-group" id="trialsSchwimmenGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Anzahl Durchgänge:</span>
+                                <input type="number" id="trialsSchwimmen" value="10" min="1" max="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group" id="geschwindigkeitSchwimmenGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Geschwindigkeit (0 - 1):</span>
+                                <input type="number" id="geschwindigkeitSchwimmen" value="0.5" min="0" max="1"
+                                    step="0.01">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Schiessen Settings -->
+                    <div class="setting-group" id="trialsSchiessenGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Anzahl Durchgänge:</span>
+                                <input type="number" id="trialsSchiessen" value="10" min="1" max="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group" id="maxBalloonBalloonCountGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Anzahl Ballons:</span>
+                                <input type="number" id="maxBalloonCount" value="10" min="1" max="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group" id="distractorBalloonGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Anzahl Distraktoren:</span>
+                                <input type="number" id="distractorCount" value="5" min="0" max="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group" id="geschwindigkeitBallonGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Geschwindigkeit (0 - 1):</span>
+                                <input type="number" id="balloonSpeed" value="0.5" min="0.1" max="2" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Autofahren Mode Settings -->
+                    <div class="setting-group" id="durationAutofahrenGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Dauer (s):</span>
+                                <input type="number" id="durationAutofahren" value="60" min="10" max="600" step="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group" id="roadSpeedAutofahrenGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Strassengeschw. (0-1):</span>
+                                <input type="number" id="roadSpeedAutofahren" value="0.5" min="0.1" max="1" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group" id="targetsDistractorsRatioAutofahrenGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Anzahl Stop Targets (%):</span>
+                                <input type="number" id="targetsDistractorsRatioAutofahren" value="50" min="0" max="100"
+                                    step="1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group" id="stimulusDurationAutofahrenGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Dauer Signale (s):</span>
+                                <input type="number" id="stimulusDurationAutofahren" value="2" min="1" max="10"
+                                    step="0.1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-group" id="stimulusIntervalAutofahrenGroup">
+                        <div class="setting">
+                            <div class="input-item">
+                                <span class="bold">Intervall Signale (s):</span>
+                                <input type="number" id="stimulusIntervalAutofahren" value="2" min="1" max="10"
+                                    step="0.1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- END .settings-columns -->
+
+            <!-- Save Button nicely placed under both columns -->
+            <div style="height: 10px; flex-shrink: 0;"></div>
+            <div class="save-settings-wrapper">
+                <button id="saveSettings" class="spaced-button">Speichern</button>
+            </div>
+            <div style="height: 40px; flex-shrink: 0;"></div>
+        </div> <!-- END .settings-content -->
+
+    </div> <!-- END .settings-panel-centered -->
+</div> <!-- END #settingsOverlay -->
+
+
+<!-- Profile Panel Trigger Button -->
+<button class="icon-btn profile-panel-btn" id="openProfilePanel">
+    <img src="images/profiles.png" class="icon" alt="Profil">
+</button>
+
+<!-- Profile Panel Overlay -->
+<div id="profilePanel" class="profile-panel-overlay" style="display: none;">
+    <div class="profile-panel">
+        <button id="closeProfilePanel" class="close-button">✖</button> <!-- ✅ Inside the panel -->
+
+        <div class="profile-header">
+            <input type="text" id="profileSearchInput" placeholder="Profile suchen..." />
+            <button id="addProfileBtn">+</button>
+        </div>
+
+        <ul id="profileListContainer"></ul>
+    </div>
+</div>
+
+
+<div id="dataOverlay" class="data-overlay" style="display: none;">
+    <div class="data-overlay-inner">
+        <div id="dataInterfaceContent"></div>
+    </div>
+</div>
+
+<div id="instructionPanel" class="instruction-panel">
+    <img id="prevStep" class="nav-arrow left-arrow" src="images/left-arrow.png" alt="Zurück" style="display: none;">
+    <div id="instructionContent" class="instruction-content">
+        <div id="instructionVisual" class="instruction-visual screen-mockup"></div>
+        <div id="instructionText" class="instruction-text"></div>
+    </div>
+    <img id="nextStep" class="nav-arrow right-arrow" src="images/right-arrow.png" alt="Weiter" style="display: none;">
+    <button id="backToMain" class="back-btn">Zurück zum Training <span class="arrow-up">↑</span></button>
+    <div id="paginationDots" class="pagination-dots"></div>
+</div>
+
+<div id="durationProgressBar" class="progress-bar bottom-bar">
+    <div class="progress-fill duration-fill"></div>
+</div>
+
+<div id="modeButtonBar" class="mode-button-bar">
+    <button data-mode="aufwaermen2" class="mode-btn grey">Leer</button>
+    <button data-mode="aufwaermen" class="mode-btn grey">Aufwärmen</button>
+    <button data-mode="normal" class="mode-btn lightblue">Normal</button>
+    <button data-mode="folgen" class="mode-btn lightblue">Folgen</button>
+    <button data-mode="punkte" class="mode-btn lightblue">Punkte</button>
+    <button data-mode="vergleich" class="mode-btn blue">Vergleich</button>
+    <button data-mode="reihenfolge" class="mode-btn blue">Reihenfolge</button>
+    <button data-mode="fangen" class="mode-btn blue">Fangen</button>
+    <button data-mode="schwimmen" class="mode-btn blue">Schwimmen</button>
+    <button data-mode="schiessen" class="mode-btn blue">Schiessen</button>
+    <button data-mode="autofahren" class="mode-btn blue">Autofahren</button>
+</div>
+
+<button class="icon-btn" id="settingsBtn">
+    <img src="images/settings.png" alt="Einstellungen" class="icon" />
+</button>
+
+<button id="hilfeBtn" class="btn btn--fab">?</button>
+<div id="hilfeOverlay" class="hilfe-overlay" style="display: none;">
+    <img src="images/curved-arrow-with-broken-line.png" class="arrow arrow-settings" />
+    <div class="help-text help-settings">Einstellungen</div>
+
+    <img src="images/curved-arrow-with-broken-line.png" class="arrow arrow-logout" />
+    <div class="help-text help-logout">Abmelden</div>
+
+    <img src="images/curved-arrow-with-broken-line.png" class="arrow arrow-profile" />
+    <div class="help-text help-profile">Profil wählen</div>
+
+    <img src="images/curved-arrow-with-broken-line.png" class="arrow arrow-data" />
+    <div class="help-text help-data">Daten anzeigen</div>
+</div>
+
+<div class="theme-toggle-bar">
+    <input type="checkbox" id="themeToggle" class="theme-toggle__input" aria-label="Toggle dark mode" />
+    <label for="themeToggle" class="theme-toggle" role="switch" aria-checked="false">
+        <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.8 1.42-1.42zm10.48 0l1.79-1.8 1.41 1.41-1.8 1.79-1.4-1.4zM12 4V1h0v3zm0 19v-3h0v3zM4 12H1v0h3zm19 0h-3v0h3zM6.76 19.16l-1.42 1.42-1.79-1.8 1.41-1.41 1.8 1.79zm10.48 0l1.4 1.4 1.8-1.79-1.41-1.41-1.79 1.8zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10z" />
+            </svg>
+        </span>
+        <span class="theme-toggle__track"><span class="theme-toggle__thumb"></span></span>
+        <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+        </span>
+    </label>
+</div>

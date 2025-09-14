@@ -1,0 +1,2224 @@
+/* styles.css */
+/* === THEME TOKENS === */
+:root{
+  /* Light */
+  --bg: #ffffff;         /* page background */
+  --text: #173C56;       /* primary text */
+  --card: #ffffff;       /* card/panel surfaces */
+  --panel: #f0f0f0;      /* side panels, lists */
+  --muted: #666666;      /* subtle text */
+  --border: #e0e0e0;     /* dividers */
+  --accent: #173C56;     /* brand accent (links/buttons) */
+  --shadow: rgba(0,0,0,0.1);
+}
+
+/* Dark mode overrides */
+body.theme-dark {
+  --bg: #3a3a3a;         /* ⬅️ slightly lighter grey background */
+  --text: #f1f1f1;
+  --card: #4a4a4a;       /* lighter than bg for contrast */
+  --panel: #4f4f4f;
+  --muted: #cccccc;
+  --border: #666666;
+  --accent: #173C56;     /* keep signature dark blue */
+  --shadow: rgba(0,0,0,0.25);
+}
+
+/* General Styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', Arial, sans-serif;
+  background-color: var(--bg);   /* was #ffffff */
+  color: var(--text);            /* was #173C56 */
+  line-height: 1.5;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Dark Mode Slider */
+.theme-toggle-bar{position:fixed;bottom:16px;left:0;right:0;display:flex;justify-content:center;pointer-events:none;z-index:9999}
+.theme-toggle{pointer-events:auto;display:inline-flex;align-items:center;gap:10px;padding:6px 10px;background:var(--card);border:1px solid var(--border);border-radius:999px;box-shadow:0 6px 20px var(--shadow);cursor:pointer;transition:background .2s,border-color .2s}
+.theme-toggle__input{position:absolute;opacity:0;pointer-events:none}
+.theme-toggle__icon{width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;opacity:.6;transition:opacity .2s}
+.theme-toggle__icon svg{width:18px;height:18px;fill:var(--text)}
+.theme-toggle__track{position:relative;width:48px;height:26px;background:var(--muted);border-radius:999px;transition:background .2s}
+.theme-toggle__thumb{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.25);transition:transform .22s,background .2s}
+.theme-toggle__input:checked + .theme-toggle[role="switch"] .theme-toggle__thumb{transform:translateX(22px)}
+.theme-toggle__input:not(:checked) + .theme-toggle .theme-toggle__icon--sun{opacity:1}
+.theme-toggle__input:checked + .theme-toggle .theme-toggle__icon--moon{opacity:1}
+.theme-toggle:hover{border-color:rgba(0,0,0,.2)}
+@media (prefers-reduced-motion: reduce){.theme-toggle__thumb,.theme-toggle,.theme-toggle__icon{transition:none}}
+
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Add padding to main-content to avoid overlap with fixed button */
+.main-content {
+  overflow: hidden;
+  text-align: center;
+  flex: 1;
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding-top: 5vh;
+  padding-bottom: 0vh;
+  /* Match button height to prevent overlap */
+}
+
+.main-content,
+.tabs-right {
+  position: relative;
+  width: 100%;
+  max-width: 100vw;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+}
+
+.vertical-tabs-wrapper {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.tabs-left {
+  width: 200px;
+  min-width: 200px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.tabs-right {
+  position: relative;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  .tabs-right {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .info-content-area img {
+    max-width: 100%;
+  }
+}
+
+.tabs-right p,
+.tabs-right li,
+.tabs-right span {
+  font-size: clamp(14px, 1.2vw, 18px);
+  line-height: 1.4;
+}
+
+.main-tab.active,
+.sub-tab-list li.active {
+  background-color: var(--text);
+  color: white;
+}
+
+/* Limit image width inside the info content area */
+.tabs-right img,
+.page-section img {
+  max-width: 80%;
+  height: auto;
+  display: block;
+  margin: 1rem 0;
+  margin: auto;
+  border-radius: 1vw;
+  /* Adjust this for more or less rounding */
+  box-shadow: 0 2px 8px var(--shadow);
+  /* Optional soft shadow */
+}
+
+img[src*="portrait.jpg"] {
+  max-width: 50% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 1rem auto !important;
+  border-radius: 1vw;
+  /* Adjust this for more or less rounding */
+  box-shadow: 0 2px 8px var(--shadow);
+  /* Optional soft shadow */
+}
+
+.tabs-right ul,
+.tabs-right ol,
+.info-content-area ul,
+.info-content-area ol {
+  margin-left: 1.5rem !important;
+  padding-left: 1.5rem !important;
+  list-style-position: outside !important;
+  list-style-type: disc !important;
+}
+
+.tabs-right li,
+.info-content-area li {
+  margin-bottom: 0.5rem;
+}
+
+
+.info-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.close-sidebar {
+  align-self: flex-end;
+  background: none;
+  font-size: 1.5rem;
+  border: none;
+  cursor: pointer;
+}
+
+.vertical-tabs {
+  display: flex;
+  height: 100%;
+}
+
+.main-topic-list {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+}
+
+.sub-tab-list {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+}
+
+.main-tab,
+.sub-tab-list li {
+  padding: 10px;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  transition: background 0.2s;
+}
+
+.main-tab:hover,
+.sub-tab-list li:hover {
+  background-color: #e0e0e0;
+}
+
+.info-content-area {
+  flex-grow: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+#loginPage .logo,
+#mainContent .logo {
+  max-width: 150px;
+  /* Or try 10rem or clamp() for dynamic resizing */
+  width: 100%;
+  height: auto;
+}
+
+#loginPage .title,
+#mainContent .title {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 4vw;
+  margin-bottom: 0.5vh;
+  /* reduce space below the title */
+}
+
+#activeProfile {
+  margin-top: 0;
+  margin-bottom: 4vh;
+  /* space before Start button */
+  font-size: 1vw;
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+#loginPage {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2vh;
+}
+
+@media (max-height: 600px) {
+  .login-form {
+    gap: 1vh;
+    padding: 1vh;
+  }
+
+  .login-form input,
+  .login-form label,
+  .login-form button {
+    font-size: 1w;
+  }
+}
+
+
+#mainContent .author-text {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 1vw;
+  margin: 0;
+  margin-top: 1vh;
+}
+
+.menu-btn {
+  position: absolute;
+  top: 1vh;
+  right: 1vw;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 3vw;
+  cursor: pointer;
+  z-index: 10;
+  color: var(--text);
+  transition: transform 0.2s ease;
+  /* Smooth lift animation */
+}
+
+.menu-btn:hover {
+  transform: translateY(-2px);
+  /* Lift up 2px on hover */
+  color: #2a5674;
+  /* Optional: slight color change to match Daten hover */
+}
+
+.logout-btn {
+  position: absolute;
+  top: 1vh;
+  left: 1vw;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 3vw;
+  cursor: pointer;
+  z-index: 2001;
+  color: var(--text);
+}
+
+.logout-btn:hover {
+  transform: translateY(-2px);
+  /* Lift up 2px on hover */
+  color: #2a5674;
+  /* Optional: slight color change to match Daten hover */
+}
+
+.column {
+  flex: 1;
+  /* Each column takes equal space */
+  display: flex;
+  flex-direction: column;
+  /* Stack setting groups vertically */
+  gap: 0.5vh;
+  /* Space between setting groups */
+}
+
+/* Adjusted main-content shift to match new sidebar width */
+.main-content.shifted {
+  transform: translateX(-21vw);
+  /* Doubled from -10vw */
+}
+
+.settings-panel.open-fixed {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+}
+
+.settings-content {
+  padding-right: 4vw;
+  max-width: 100%;
+  overflow-x: hidden;
+
+}
+
+.settings-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2vw;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.settings-column-left,
+.settings-column-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+}
+
+.settings-column-close {
+  width: 3vw;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.settings-column-close .close-button {
+  font-size: 2vw;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.settings-column-close .close-button:hover {
+  color: #2a5674;
+}
+
+.settings-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.settings-panel::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.settings-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.setting-group {
+  margin-bottom: 1vh;
+}
+
+.setting {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2vh;
+}
+
+.bold {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 700;
+}
+
+.checkbox-group,
+.checkbox-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2vh;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.grid-row {
+  display: flex;
+  gap: 0.1vh;
+}
+
+.grid-inputs {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.grid-inputs input[type="number"] {
+  flex: 1;
+  margin: 0 0.5vw;
+}
+
+.grid-inputs span {
+  margin: 0 0.5vw;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 1vw;
+  font-weight: bold;
+  color: var(--text);
+}
+
+.checkbox-item input[type="checkbox"],
+.checkbox-item input[type="radio"] {
+  width: max(1.5vw, 16px);
+  height: max(1.5vw, 16px);
+  flex-shrink: 0;
+  margin-right: 0.3vw;
+}
+
+.checkbox-item span {
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.checkbox-item.with-spacing {
+  margin-bottom: 1vh;
+}
+
+.input-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.input-item span {
+  font-family: 'Montserrat', Arial, sans-serif;
+  margin-bottom: 0.2vh;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.input-select {
+  font-family: 'Montserrat', Arial, sans-serif;
+  width: 100%;
+  padding: 0.2vh;
+  font-size: 0.8vw;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  /* Consistent with other inputs */
+  border-radius: 0.3vw;
+  /* Subtle rounding */
+  background-color: white;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5"><polygon points="0,0 10,0 5,5" fill="#173C56"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 0.5vw center;
+  -webkit-appearance: none;
+  /* Remove default browser styling */
+  -moz-appearance: none;
+  appearance: none;
+}
+
+#startBtn {
+  font-family: 'Montserrat', Arial, sans-serif;
+  padding: 1vh 3vw;
+  font-size: 2vw;
+  cursor: pointer;
+  margin: 2vh auto;
+  border-radius: 0.5vw;
+  background: var(--accent);
+  /* Added background */
+  color: white;
+  /* Added text color */
+  border: none;
+  /* Removes default border */
+}
+
+#startBtn:hover {
+  background: #2a5674;
+  /* Hover effect */
+}
+
+.help-btn {
+  font-family: 'Montserrat', Arial, sans-serif;
+  width: 100vw;
+  /* Full viewport width */
+  height: 5vh;
+  /* Fixed height for square-ish appearance */
+  font-size: 1.5vw;
+  /* Slightly larger text for visibility */
+  cursor: pointer;
+  border-radius: 0;
+  /* Remove rounding for a flat bar */
+  background: var(--accent);
+  /* Your blue color */
+  color: white;
+  /* White text by default */
+  border: none;
+  /* Remove border */
+  position: fixed;
+  bottom: 0;
+  /* Glued to bottom */
+  left: 0;
+  /* Full width from left edge */
+  z-index: 500;
+  /* Above gameArea */
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  /* Shadow at top for depth */
+  display: flex;
+  /* Center text */
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  /* Remove padding, height is controlled by height property */
+}
+
+.help-btn:hover {
+  background: #2a5674;
+  /* Slightly lighter blue for hover */
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+  /* Enhanced shadow on hover */
+}
+
+#saveSettings {
+  font-family: 'Montserrat', Arial, sans-serif;
+  padding: 0.3vh 0.5vw;
+  font-size: 1vw;
+  cursor: pointer;
+  border-radius: 0.5vw;
+  width: auto;
+  padding: 0.5vh 2vw;
+  align-self: center;
+  box-sizing: border-box;
+  background: var(--accent);
+  color: white;
+  border: none;
+  margin-bottom: 0;
+  /* Overrides .spaced-button’s margin-bottom */
+}
+
+.save-settings-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 2vh;
+}
+
+
+#saveSettings:hover {
+  background: #2a5674;
+  /* Hover effect */
+}
+
+.data-btn {
+  position: absolute;
+  bottom: 1vh;
+  left: 1vw;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 1.5vw;
+  cursor: pointer;
+  z-index: 10;
+  color: var(--text);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.data-btn:hover {
+  transform: translateY(-2px);
+  color: #2a5674;
+}
+
+.game-active .data-btn {
+  display: none;
+}
+
+button img.icon {
+  width: 2.5vw;
+  height: 2.5vw;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+button.icon-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button.icon-btn:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+#settingsBtn {
+  position: absolute;
+  top: 1vh;
+  right: 1vw;
+  z-index: 2001;
+}
+
+#logoutBtn {
+  position: absolute;
+  top: 1vh;
+  left: 1vw;
+  z-index: 2001;
+}
+
+#dataBtn {
+  position: absolute;
+  bottom: 1vh;
+  left: 1vw;
+  z-index: 2001;
+}
+
+#openProfilePanel {
+  position: absolute;
+  bottom: 1vh;
+  right: 1vw;
+  z-index: 2001;
+}
+
+
+#backgroundLayer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  /* This ensures the image scales to fill the area */
+}
+
+#gameArea {
+  position: relative;
+  width: 100vw;
+  height: 94vh;
+  max-width: 100vw;
+  max-height: calc(100vh - 2.5vh);
+  overflow: hidden;
+  display: none;
+  background: transparent;
+}
+
+#gameArea.active {
+  max-height: 100vh;
+}
+
+/* Hide Daten button during game */
+.game-active #dataBtn {
+  display: none;
+}
+
+.game-active #instructionsBtn {
+  display: none;
+}
+
+.game-active .mode-button-bar {
+  display: none;
+}
+
+.game-active .openProfilePanel {
+  display: none;
+}
+
+#gameArea>* {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translate(0, 0);
+}
+
+.blue-dot {
+  border-radius: 50%;
+  /* Makes dots circular */
+  pointer-events: none;
+  /* Prevents dots from being clickable */
+}
+
+#fixationDot {
+  width: 2vw;
+  height: 2vw;
+  background: red;
+  border-radius: 50%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  transition: left 2s linear, top 2s linear;
+}
+
+#gameArea div {
+  border: 1px color=#ccc;
+  /* Optional: Add borders to grid cells */
+}
+
+#target {
+  width: 2vw;
+  height: 2vw;
+  background: blue;
+  border-radius: 50%;
+  position: absolute;
+  display: none;
+}
+
+.metrics {
+  font-family: 'Montserrat', Arial, sans-serif;
+  margin-top: 2vh;
+  font-size: 1.5vw;
+}
+
+.game-active .title,
+.game-active .metrics,
+.game-active .author-text,
+.game-active #hilfeBtn,
+.game-active #dataBtn,
+.game-active #mainLogo {
+  display: none;
+}
+
+.input-item input[type="number"] {
+  font-family: 'Montserrat', Arial, sans-serif;
+  width: 100%;
+  padding: 0.2vh;
+  font-size: 0.8vw;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  /* Added border for consistency */
+  border-radius: 0.3vw;
+  /* Subtle rounding */
+}
+
+#oksCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* ✅ fills parent */
+  height: 100%;
+  z-index: 1;
+  display: block;
+}
+
+#fixationDot,
+#target {
+  z-index: 2;
+  position: absolute;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5vh;
+  width: 25vw;
+  max-width: 90vw;
+  max-height: 90vh;
+  /* ✅ prevent overflow */
+  background: var(--card);
+  padding: 2vh;
+  border-radius: 0.5vw;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.login-form label {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 1.5vw;
+  color: var(--text);
+}
+
+.login-form input {
+  font-family: 'Montserrat', Arial, sans-serif;
+  width: 100%;
+  padding: 0.8vh;
+  font-size: 1.5vw;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 0.3vw;
+}
+
+.login-actions {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+  margin: 1.5vh auto 0;
+}
+
+.login-form button#loginBtn {
+  font-family: 'Montserrat', Arial, sans-serif;
+  padding: 1vh 2vw;
+  font-size: 1.5vw;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--accent);
+  cursor: pointer;
+  border-radius: 0.5vw;
+  transition: background 0.3s ease;
+}
+
+.login-form button#loginBtn:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.toggle-password {
+  width: 2.5vw;
+  height: 2.5vw;
+  font-size: 1.2vw;
+  background: none;
+  border: 1px solid var(--accent);
+  cursor: pointer;
+  color: var(--text);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.3vw;
+}
+
+.toggle-password:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+#loginError {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 1vw;
+  color: #e57373;
+  margin-top: 1vh;
+  text-align: center;
+}
+
+.login-btn {
+  font-family: 'Montserrat', Arial, sans-serif;
+  padding: 1vh 2vw;
+  font-size: 1.5vw;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--accent);
+  cursor: pointer;
+  border-radius: 0.5vw;
+  transition: background 0.3s ease;
+}
+
+.login-btn:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.login-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1vw;
+  margin: 1.5vh auto 0;
+  width: 100%;
+}
+
+.spaced-button {
+  margin-bottom: 20px;
+}
+
+#fixationDot {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.bold {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#profileSearch {
+  width: 100%;
+  height: 5vh;
+  padding: 0.2vh;
+  font-size: 3vh;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 0.3vw;
+  font-family: 'Montserrat', Arial, sans-serif;
+}
+
+#profileList div {
+  padding: 0.5vh;
+  cursor: pointer;
+}
+
+#profileList div:hover {
+  background-color: #f0f0f0;
+}
+
+#profileList {
+  display: none;
+  position: absolute;
+  background: white;
+  border: 1px solid var(--border);
+  max-height: 60vh;
+  overflow-y: auto;
+  width: 100%;
+  z-index: 10;
+  top: 100%;
+  /* Positions the list right below the search input */
+  left: 0;
+  /* Aligns it with the left edge of the search input */
+}
+
+.profile-row {
+  padding: 0.5vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.profile-row:hover {
+  background-color: #f0f0f0;
+}
+
+.delete-btn {
+  font-size: 1vw;
+  color: var(--text);
+  /* Red color for delete */
+  padding: 0 0.5vw;
+  cursor: pointer;
+  z-index: 10;
+  /* Ensure it’s above other elements */
+}
+
+.delete-btn:hover {
+  color: var(--text);
+  /* Darker red on hover */
+}
+
+/* styles.css */
+.feedback {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  font-family: 'Montserrat', Arial, sans-serif !important;
+  font-size: 2vw !important;
+  z-index: 1000 !important;
+  text-align: center !important;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.datenschutz-link {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 0.75vw;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.datenschutz-link:hover {
+  text-decoration: underline;
+}
+
+.login-form select {
+  font-family: 'Montserrat', Arial, sans-serif;
+  width: 100%;
+  padding: 0.8vh;
+  font-size: 1.5vw;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 0.3vw;
+  background-color: white;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5"><polygon points="0,0 10,0 5,5" fill="#173C56"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 0.5vw center;
+}
+
+.vergleich-grid {
+  width: 80%;
+  height: 80%;
+  position: absolute;
+  left: 10%;
+  top: 10%;
+  z-index: 3;
+}
+
+.grid-cell {
+  float: left;
+  background-size: 80%;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  border: none;
+  /* Remove border if not needed */
+}
+
+.grid-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  background: black;
+  z-index: 5;
+}
+
+.arrow-down {
+  margin-left: 0.5vw;
+  font-size: 1.5vw;
+}
+
+/* Instruction Panel */
+.instructions-btn {
+  font-family: 'Montserrat', Arial, sans-serif;
+  padding: 1vh 2vw;
+  font-size: 1.5vw;
+  cursor: pointer;
+  margin: 2vh 0 1vh 0;
+  border-radius: 0.5vw;
+  background: var(--card);
+  color: var(--text);
+  border: 2px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, color 0.3s ease;
+  z-index: 1001;
+}
+
+.instructions-btn:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.arrow-down {
+  margin-left: 0.5vw;
+  font-size: 1.5vw;
+}
+
+.nav-arrow {
+  width: 4vw;
+  height: auto;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1001;
+}
+
+.left-arrow {
+  left: 2vw;
+}
+
+.right-arrow {
+  right: 2vw;
+}
+
+/* Instruction Panel */
+.instruction-panel {
+  position: fixed;
+  bottom: -100vh;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--card);
+  z-index: 1000;
+  transition: bottom 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.instruction-panel.active {
+  bottom: 0;
+}
+
+.instruction-content {
+  width: 80%;
+  height: 80%;
+  text-align: center;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 2vw;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.screen-mockup {
+  width: 50vw;
+  /* Scaled down to fit */
+  height: 28.125vw;
+  /* 16:9 aspect ratio (50vw * 9/16) */
+  border: 4px solid #173C56;
+  /* Dark blue border */
+  background: var(--card);
+  /* White background like gameArea */
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* Match gameArea */
+}
+
+/* Instruction Text */
+.instruction-text {
+  margin-top: 2vh;
+  font-size: 1.5vw;
+  color: var(--text);
+}
+
+.instruction-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 3vw;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0 2vw;
+  z-index: 1100;
+}
+
+.instruction-left {
+  left: 2vw;
+}
+
+.instruction-right {
+  right: 2vw;
+}
+
+#instructionPanel:not(.active) .instruction-arrow {
+  display: none;
+}
+
+.back-btn {
+  font-family: 'Montserrat', Arial, sans-serif;
+  padding: 1vh 2vw;
+  font-size: 1.5vw;
+  cursor: pointer;
+  border-radius: 0.5vw;
+  background: var(--card);
+  color: var(--text);
+  border: 2px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, color 0.3s ease;
+  position: absolute;
+  top: 2vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
+}
+
+.back-btn:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.arrow-up {
+  margin-left: 0.5vw;
+  font-size: 1.5vw;
+}
+
+/* Pagination Dots */
+.pagination-dots {
+  position: absolute;
+  bottom: 10vh;
+  /* Above dataBtn and duration bar */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5vw;
+  z-index: 1001;
+  /* Above instruction content */
+}
+
+.dot {
+  width: 0.8vw;
+  height: 0.8vw;
+  background: #ccc;
+  /* Default grey for inactive */
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.dot.active {
+  background: var(--accent);
+  /* Dark blue for current page */
+}
+
+/* Adjust instruction content to avoid overlap with dots */
+.instruction-content {
+  width: 80%;
+  height: 70%;
+  /* Reduced to make space for dots */
+  text-align: center;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 2vw;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Adjust main-content when instructions are active */
+.main-content.instructions-active {
+  transform: translateY(-100vh);
+  /* Shift up */
+}
+
+/* In styles.css */
+.progress-bar {
+  position: fixed;
+  /* Relative to viewport, not .main-content */
+  width: 100vw;
+  height: 10px;
+  background: #e0e0e0;
+  z-index: 1001;
+  /* Above all other elements */
+  overflow: hidden;
+  display: none;
+  /* Hidden until shown by JS */
+}
+
+.top-bar {
+  top: 0;
+  left: 0;
+}
+
+.bottom-bar {
+  bottom: 0;
+  left: 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.progress-fill.duration-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width linear;
+}
+
+.progress-fill.grey {
+  background: #808080;
+}
+
+.trial-increments {
+  position: absolute;
+  /* Stays within progress-bar */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.increment {
+  flex: 1;
+  border-right: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.increment:last-child {
+  border-right: none;
+}
+
+.goal {
+  position: absolute;
+  background-color: rgba(50, 205, 50);
+  height: 100%;
+}
+
+.footballer,
+.football,
+.goal-image {
+  position: absolute;
+}
+
+.data-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.data-overlay-inner {
+  width: 80vw;
+  height: 80vh;
+  background: var(--card);
+  border-radius: 1vw;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+#dataIframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+#closeDataOverlay {
+  position: absolute;
+  top: 1vh;
+  right: 1vw;
+  font-size: 2vw;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.mode-button-bar {
+  position: absolute;
+  top: 1.5vh;
+  left: 4vw;
+  right: 4vw;
+  display: flex;
+  gap: 0.5vw;
+  justify-content: center;
+  z-index: 9;
+}
+
+.mode-btn {
+  font-family: 'Montserrat', Arial, sans-serif;
+  padding: 0.5vh 1vw;
+  font-size: 1vw;
+  border: none;
+  border-radius: 0.5vw;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.mode-btn.grey {
+  background: #888;
+  color: white;
+}
+
+.mode-btn.lightblue {
+  background: #77daff;
+  color: white;
+}
+
+.mode-btn.blue {
+  background: var(--accent);
+  color: white;
+}
+
+/* Specific active outlines for each mode button color */
+.mode-btn.grey.active {
+  outline: 6px solid #173C56;
+  /* Dark blue */
+  box-shadow: 0 0 10px rgba(23, 60, 86, 0.6);
+  /* Optional dark blue glow */
+}
+
+.mode-btn.lightblue.active {
+  outline: 6px solid #888;
+  /* Grey */
+  box-shadow: 0 0 10px rgba(136, 136, 136, 0.6);
+  /* Optional grey glow */
+}
+
+.mode-btn.blue.active {
+  outline: 6px solid #77daff;
+  /* Light blue */
+  box-shadow: 0 0 10px rgba(119, 218, 255, 0.6);
+  /* Optional light blue glow */
+}
+
+/* Remove the old generic active outline if you want */
+.mode-btn.active {
+  /* No default outline here anymore */
+  outline: none;
+  box-shadow: none;
+}
+
+.game-active .mode-button-bar {
+  display: none;
+}
+
+.profile-panel-btn {
+  position: absolute;
+  bottom: 1vh;
+  right: 1vw;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 1.5vw;
+  cursor: pointer;
+  z-index: 10;
+  color: var(--text);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.profile-panel-btn:hover {
+  transform: translateY(-2px);
+  color: #2a5674;
+}
+
+.profile-panel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.profile-panel {
+  position: relative;
+  /* make sure children can be absolutely positioned */
+  background: var(--card);
+  padding: 3vh 4vw;
+  border-radius: 1vw;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  width: 30vw;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.profile-panel .close-button {
+  position: absolute;
+  top: 1vh;
+  right: 1vw;
+  font-size: 2vw;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.profile-panel .close-button:hover {
+  color: #2a5674;
+}
+
+.profile-header {
+  display: flex;
+  gap: 1vw;
+  margin-bottom: 2vh;
+}
+
+#profileSearchInput {
+  flex: 1;
+  font-size: 1vw;
+  padding: 0.5vh;
+  border: 1px solid var(--border);
+  border-radius: 0.3vw;
+}
+
+#addProfileBtn {
+  font-size: 1.2vw;
+  padding: 0 1vw;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 0.3vw;
+  cursor: pointer;
+}
+
+#addProfileBtn:hover {
+  background: #2a5674;
+}
+
+#profileListContainer {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1vh 0;
+  border-bottom: 1px solid #ccc;
+  font-size: 1vw;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.profile-item:hover {
+  background-color: #f5f5f5;
+  transform: translateX(2px);
+}
+
+.profile-item button {
+  font-size: 1vw;
+  color: #e74c3c;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.profile-item button:hover {
+  color: #c0392b;
+}
+
+.settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  /* ✅ Prevent horizontal scroll */
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  /* or whatever your overlay uses */
+  z-index: 2000;
+  box-sizing: border-box;
+}
+
+.settings-panel-centered {
+  background: var(--card);
+  width: 35vw;
+  max-height: 80vh;
+  max-width: 95vw;
+  overflow-y: auto;
+  padding: 2vh 2vw;
+  border-radius: 1vw;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.settings-panel-centered .close-button {
+  position: absolute;
+  top: 1vh;
+  right: 1vw;
+  font-size: 2vw;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.settings-panel-centered .close-button:hover {
+  color: #2a5674;
+}
+
+.hilfe-btn {
+  position: fixed;
+  bottom: 1vh;
+  right: 50%;
+  transform: translateX(50%);
+  z-index: 2001;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 3vw;
+  height: 3vw;
+  font-size: 1vw;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.hilfe-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 2000;
+  pointer-events: none;
+}
+
+.arrow {
+  position: absolute;
+  width: 10vw;
+  height: auto;
+  z-index: 1002;
+  pointer-events: none;
+}
+
+.help-text {
+  position: absolute;
+  font-size: 1.2vw;
+  font-weight: bold;
+  background: white;
+  padding: 0.5vw 1vw;
+  border-radius: 0.5vw;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 1002;
+  pointer-events: none;
+}
+
+/* Position each arrow and label individually */
+.arrow-settings {
+  top: 5vh;
+  right: 3vw;
+  transform: rotate(270deg);
+}
+
+.help-settings {
+  top: 20vh;
+  right: 13vw;
+}
+
+.arrow-logout {
+  top: 5vh;
+  left: 3vw;
+  transform: rotate(90deg) scaleX(-1);
+}
+
+.help-logout {
+  top: 20vh;
+  left: 13vw;
+}
+
+.arrow-profile {
+  bottom: 5vh;
+  right: 3vw;
+  transform: rotate(270deg) scaleX(-1);
+}
+
+.help-profile {
+  bottom: 20vh;
+  right: 13vw;
+}
+
+.arrow-data {
+  bottom: 5vh;
+  left: 3vw;
+  transform: rotate(90deg);
+}
+
+.help-data {
+  bottom: 20vh;
+  left: 13vw;
+}
+
+
+.login-wrapper {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.login-left {
+  flex: 1;
+  background: #fff;
+  padding: 4vh 4vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-logo {
+  width: clamp(100px, 20vw, 240px);
+  height: auto;
+  display: block;
+  margin-bottom: 3vh;
+}
+
+.login-right {
+  flex: 1;
+  background: #f0f4f8;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100vh;
+  width: 100%;
+}
+
+.page-container {
+  position: relative;
+  width: 100%;
+  padding: 4vh 4vw;
+  overflow: visible;
+  z-index: 1;
+  /* Lower than nav-bar and dots */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .nav-bar {
+    width: 5vw;
+    /* Larger for touch usability */
+    height: 5vw;
+  }
+
+  .nav-arrow-img {
+    width: 3vw;
+    /* Scale image with container */
+  }
+
+  .nav-bar-left {
+    left: calc(50% + 2vw);
+    /* Slightly more offset */
+  }
+
+  .nav-bar-right {
+    right: 1vw;
+    /* Slightly more offset for padding */
+  }
+
+  .dots {
+    left: 75%;
+  }
+
+  .dots span {
+    width: 1.5vw;
+    height: 1.5vw;
+  }
+}
+
+.page-section {
+  display: none;
+}
+
+.page-section.active {
+  display: block;
+}
+
+
+/* Heading styles */
+.page-section h1 {
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1vh;
+  text-align: center;
+}
+
+.page-section h2 {
+  font-size: clamp(22px, 2.5vw, 32px);
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+}
+
+/* Paragraph and list text */
+.page-section p,
+.page-section li {
+  font-size: clamp(16px, 1.5vw, 20px);
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 1.5vh;
+}
+
+.page-section ul,
+.page-section ol {
+  padding-left: 2vw;
+  list-style-position: outside;
+  list-style-type: disc;
+}
+
+.page-section:-webkit-scrollbar {
+  display: none;
+}
+
+.page-section {
+  -ms-overflow-style: auto;
+  scrollbar-width: none;
+}
+
+/* Hide scrollbars */
+.page-section::-webkit-scrollbar {
+  display: none;
+}
+
+.login-right,
+.page-slider,
+.slide {
+  height: 100%;
+  min-height: 100%;
+}
+
+.login-right #arrowLeft,
+.login-right #arrowRight {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: clamp(24px, 3vw, 40px);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.5vw 1vw;
+  border: none;
+  border-radius: 50%;
+  color: var(--text);
+  z-index: 10;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.login-right #arrowLeft:hover,
+.login-right #arrowRight:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.login-right #arrowLeft {
+  left: 1vw;
+}
+
+.login-right #arrowRight {
+  right: 1vw;
+}
+
+.dots {
+  position: fixed;
+  /* Changed to fixed to stay stationary in viewport */
+  bottom: 3vh;
+  left: 75%;
+  /* Center within login-right (midpoint of right half) */
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1vw;
+  z-index: 100;
+  /* Ensure dots are above content */
+}
+
+.dots span {
+  width: 1vw;
+  height: 1vw;
+  background: #ccc;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background 0.3s;
+}
+
+.dots span.active {
+  background: var(--accent);
+}
+
+.fixed-arrow {
+  position: fixed;
+  /* or absolute relative to a fixed panel */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 999;
+  font-size: 2vw;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.fixed-arrow.left {
+  left: 1vw;
+}
+
+.fixed-arrow.right {
+  right: 1vw;
+}
+
+.nav-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Navigation bars for login-right */
+.nav-bar {
+  position: fixed;
+  /* Stays stationary in viewport */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3vw;
+  /* Container size */
+  height: 3vw;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  color: var(--text);
+  z-index: 100;
+  /* Above content */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.nav-bar:hover {
+  background: var(--accent);
+  color: white;
+}
+
+/* Specific override for leftNavBar */
+#leftNavBar {
+  left: calc(50% + 4.2vw);
+  /* Force rightward shift */
+}
+
+.nav-bar-right {
+  right: 1vw;
+  /* Position at viewport’s right edge, within login-right */
+}
+
+.nav-arrow-img {
+  width: 2vw;
+  /* Slightly smaller than container to fit comfortably */
+  height: auto;
+  object-fit: contain;
+  /* Ensures image scales without distortion */
+}
+
+.nav-click-area:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.branding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3vh;
+}
+
+.login-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2vw;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 1vh;
+}
+
+.login-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  margin-top: 2vh;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 1.2vw;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.link-btn:hover {
+  color: #2a5674;
+}
+
+.login-form.small-form {
+  width: 25vw;
+  background: #f9f9f9;
+  padding: 2vh;
+  border-radius: 0.5vw;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.login-form.small-form label {
+  font-size: 1vw;
+}
+
+.login-form.small-form h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.5vw;
+  color: var(--text);
+  margin-bottom: 1.5vh;
+  text-align: center;
+}
+
+.login-form input[type="text"],
+.login-form input[type="email"],
+.login-form input[type="password"],
+.login-form select {
+  width: 100%;
+  /* ✅ important! */
+  box-sizing: border-box;
+}
+
+
+.login-btn.danger {
+  background: #e57373;
+  border-color: #e57373;
+}
+
+.form-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(249, 249, 249, 0.98);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.form-panel.active {
+  display: flex;
+}
+
+.login-left {
+  position: relative;
+  /* 🔑 Required so form-panel positions inside it */
+}
+
+input[type="checkbox"] {
+  width: 1.5vw;
+  height: 1.5vw;
+  accent-color: var(--text);
+  /* Optional: matches your theme */
+}
+
+.login-links p {
+  font-size: 1.2vw;
+  color: var(--text);
+}
+
+.inline-links {
+  display: flex;
+  gap: 1.2vw;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1vh;
+}
+
+.login-text.centered-text {
+  text-align: center;
+  width: 100%;
+  display: block;
+}
+
+.inline-links .link-btn {
+  font-size: 1vw;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.inline-links .link-btn:hover {
+  color: #2a5674;
+}
+
+.feedback-msg {
+  font-size: 1vw;
+  color: #e57373;
+  text-align: center;
+  max-width: 80%;
+  margin: 1vh auto;
+  display: none;
+}
+
+.feedback-msg.success {
+  color: #4caf50;
+}
+
+#resetMessage.feedback-msg {
+  max-width: 80%;
+  margin: 1vh auto;
+  font-size: 1vw;
+  color: red;
+  text-align: center;
+}
+
+#exitGameBtn {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 1vw;
+  margin-top: 0.25vh;
+  padding: 0.5vh 1vw;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 0.5vw;
+  cursor: pointer;
+}
+
+#exitGameBtn:hover {
+  background: #c0392b;
+}
+
+/* SchwimmenMode spezifische CSS */
+
+/* Hauptente */
+.duck {
+  width: 4vw;
+  /* kleiner, relativ zur Bildschirmbreite */
+  height: auto;
+  max-width: 130px;
+  /* nicht größer als 60px */
+  pointer-events: none;
+  user-select: none;
+  position: absolute;
+  object-fit: contain;
+}
+
+/* Guide-Enten (duck_guide) */
+.duck-guide {
+  width: 2.5vw;
+  height: auto;
+  max-width: 100px;
+  opacity: 0.8;
+  pointer-events: none;
+  user-select: none;
+  position: absolute;
+  object-fit: contain;
+}
+
+/* Brot */
+.bread {
+  width: 5vw;
+  height: auto;
+  max-width: 100px;
+  cursor: pointer;
+  position: absolute;
+  z-index: 6;
+  object-fit: contain;
+}
+
+/* Alle schwimmenden Elemente sanft bewegen */
+.duck,
+.duck-guide,
+.bread {
+  transition: left 0.5s linear, top 0.5s linear;
+}

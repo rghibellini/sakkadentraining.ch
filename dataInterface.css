@@ -1,0 +1,393 @@
+/* ================================
+   Data Interface (scoped + themable, deduped)
+   Uses app tokens:
+   --bg, --card, --panel, --text, --border, --accent, --shadow
+   ================================= */
+
+/* Overlay container (backdrop handled by app) */
+#dataOverlay {
+  font-family: 'Montserrat', Arial, sans-serif;
+  color: var(--text);
+  background: transparent;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+/* Dialog */
+#dataOverlay .data-overlay-inner {
+  width: clamp(1100px, 92vw, 1500px);
+  height: clamp(700px, 92vh, 980px);
+  background: var(--card);
+  color: var(--text);
+  border-radius: 1rem;
+  box-shadow: 0 0 20px var(--shadow);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden; /* keep rounded corners clean */
+}
+
+/* Header */
+#dataOverlay .data-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: 0.75rem 1rem;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+#dataOverlay .data-overlay-title {
+  font-size: clamp(16px, 1.1vw, 19px);
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+#dataOverlay .close-button {
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  font-size: clamp(18px, 1.4vw, 22px);
+  line-height: 1;
+  padding: .25rem .4rem;
+  border-radius: .4rem;
+  transition: background .2s, color .2s, transform .08s;
+}
+#dataOverlay .close-button:hover {
+  color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+}
+#dataOverlay .close-button:active { transform: scale(0.98); }
+
+/* 3-column layout */
+#dataOverlay .main-container {
+  display: grid;
+  grid-template-columns: 220px 1fr 240px; /* left / middle / right */
+  gap: .75rem;
+  padding: .75rem;
+  height: 100%;
+  background: var(--card);
+  min-height: 0; /* allow middle to scroll */
+}
+
+/* LEFT: profiles */
+#dataOverlay .left-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: .75rem;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  min-width: 200px; max-width: 240px;
+}
+#dataOverlay #profileSearch {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: .5rem;
+  background: var(--card);
+  color: var(--text);
+  outline: none;
+  max-width: calc(100% - 1rem);
+}
+#dataOverlay #dataProfileList {
+  overflow: auto;
+  margin: 0 0.5rem 0.5rem 0.5rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: .5rem;
+}
+#dataOverlay .profile-tab {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .5rem; padding: .6rem .75rem; cursor: pointer;
+  background: var(--card); color: var(--text);
+  border-bottom: 1px solid var(--border);
+  transition: background .2s, color .2s, transform .08s, filter .2s;
+}
+#dataOverlay .profile-tab:hover { color: var(--accent); }
+#dataOverlay .profile-tab.active { background: var(--accent); color: var(--card); filter: brightness(1.06); }
+#dataOverlay .profile-tab:last-child { border-bottom: none; }
+
+/* MIDDLE: content (tabs + scroll area) */
+#dataOverlay .middle-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: .75rem;
+  display: grid;
+  grid-template-rows: auto 1fr; /* tabs + scroll */
+  overflow: hidden;
+  min-height: 0; /* critical for scrolling child */
+}
+#dataOverlay .mode-tabs {
+  display: flex; gap: .4rem;
+  padding: .4rem .5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  overflow-x: auto;
+}
+#dataOverlay .mode-tab {
+  background: var(--card);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: .5rem;
+  padding: .35rem .6rem;
+  font-size: .9rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .2s, color .2s, transform .08s, filter .2s, border-color .2s;
+}
+#dataOverlay .mode-tab:hover,
+#dataOverlay .mode-tab.active {
+  background: var(--accent);
+  color: var(--card);
+}
+
+/* Scrollable content area (graphs + sessions) */
+#dataOverlay .data-content {
+  background: var(--card);
+  color: var(--text);
+  padding: 0.6rem;
+  overflow: auto;          /* enable scrolling */
+  height: 100%;
+  min-height: 0;           /* critical in CSS grid */
+  -webkit-overflow-scrolling: touch;
+}
+#dataOverlay .charts-container-full,
+#dataOverlay .quadrant-grid,
+#dataOverlay .grid-wrapper {
+  max-width: 100%;
+  min-height: 0;           /* don’t force extra height */
+}
+
+/* Quadrant grid fixes */
+#dataOverlay .quadrant-cell { border: 1px solid var(--border) !important; }
+#dataOverlay .quadrant-cell.empty { background: transparent !important; }
+/* Keep the little stat badge labels black, but theme the surface */
+#dataOverlay .quadrant-stats {
+  background: var(--card) !important;
+  color: #000 !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* RIGHT: filters/actions (slimmer) */
+#dataOverlay .filter-column {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: .75rem;
+  padding: .6rem;
+  display: grid;
+  grid-auto-rows: max-content;
+  align-content: start;
+  gap: .5rem;
+  min-width: 220px; max-width: 240px;
+}
+#dataOverlay .filter-column label { font-size: .9rem; color: var(--text); }
+#dataOverlay .filter-column input[type="text"],
+#dataOverlay .filter-column input[type="date"],
+#dataOverlay .filter-column input[type="number"],
+#dataOverlay .filter-column select {
+  width: 100%; box-sizing: border-box;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: .45rem;
+  background: var(--card);
+  color: var(--text);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+#dataOverlay .filter-column input:focus,
+#dataOverlay .filter-column select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 18%, transparent);
+}
+#dataOverlay .filter-buttons { display: flex; gap: .4rem; flex-wrap: wrap; }
+#dataOverlay .filter-buttons button {
+  background: var(--accent); color: var(--card);
+  border: 1px solid var(--accent); border-radius: .5rem;
+  padding: .5rem .8rem; cursor: pointer; font-size: .95rem;
+  transition: filter .2s, transform .08s, box-shadow .2s, background .2s, color .2s;
+}
+#dataOverlay .filter-buttons button:hover { filter: brightness(1.08); }
+#dataOverlay .filter-buttons button.secondary {
+  background: var(--card); color: var(--accent); border: 1px solid var(--accent);
+}
+#dataOverlay .filter-buttons button.secondary:hover {
+  background: var(--accent); color: var(--card);
+}
+
+/* Tables inside data-content */
+#dataOverlay table {
+  width: 100%; border-collapse: collapse;
+  background: var(--card); color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: .5rem; overflow: hidden;
+}
+#dataOverlay th, #dataOverlay td {
+  padding: .6rem .75rem; border-bottom: 1px solid var(--border);
+}
+#dataOverlay thead th {
+  background: var(--panel); color: var(--text);
+  position: sticky; top: 0; z-index: 1;
+}
+#dataOverlay tbody tr:hover {
+  background: color-mix(in oklab, var(--accent) 10%, var(--card));
+}
+
+/* Generic buttons/inputs/links inside overlay */
+#dataOverlay button {
+  background: var(--card); color: var(--accent);
+  border: 1px solid var(--accent); border-radius: .5rem;
+  padding: .45rem .7rem; cursor: pointer;
+  transition: background .2s, color .2s, filter .2s, transform .08s;
+}
+#dataOverlay button:hover { background: var(--accent); color: var(--card); }
+#dataOverlay button:active { transform: translateY(1px); }
+#dataOverlay input, #dataOverlay select, #dataOverlay textarea {
+  background: var(--card); color: var(--text); border: 1px solid var(--border);
+}
+#dataOverlay a { color: var(--accent); text-decoration: none; }
+#dataOverlay a:hover { text-decoration: underline; }
+
+/* Scrollbar */
+#dataOverlay *::-webkit-scrollbar { width: 10px; height: 10px; }
+#dataOverlay *::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 8px; }
+#dataOverlay *::-webkit-scrollbar-track { background: transparent; }
+
+/* Responsive: stack columns */
+@media (max-width: 1100px) {
+  #dataOverlay .main-container { grid-template-columns: 1fr; }
+  #dataOverlay .left-panel, #dataOverlay .filter-column { order: -1; }
+}
+
+/* Utilities */
+#dataOverlay .muted { color: var(--muted); }
+#dataOverlay .pill {
+  display: inline-block; padding: .2rem .5rem; border-radius: 999px;
+  background: var(--panel); color: var(--text); border: 1px solid var(--border);
+  font-size: .85rem;
+}
+#dataOverlay .hint { font-size: .85rem; color: var(--muted); margin-top: -.3rem; }
+
+/* ==== FINAL SCROLL FIXES (append to end of dataInterface.css) ==== */
+
+/* Make the dialog body a flex column so the content area can flex/scroll */
+#dataOverlay .data-overlay-inner{
+  display: flex;            /* was grid earlier; flex here wins */
+  flex-direction: column;
+}
+
+/* The main 3-column area fills the dialog and may shrink */
+#dataOverlay .main-container{
+  flex: 1 1 auto;
+  min-height: 0;            /* CRITICAL: allow middle column to shrink */
+  height: auto;
+}
+
+/* Middle column = tabs (fixed) + scrolling content */
+#dataOverlay .middle-panel{
+  display: flex;            /* override grid for robustness */
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;            /* CRITICAL: allow .data-content to scroll */
+  overflow: hidden;         /* keep rounded borders tidy */
+}
+
+/* Tabs never grow */
+#dataOverlay .mode-tabs{ flex: 0 0 auto; }
+
+/* The scrolling region */
+#dataOverlay .data-content{
+  flex: 1 1 0;              /* take remaining space */
+  min-height: 0;            /* CRITICAL inside flex/grid */
+  overflow: auto;           /* scrollbar lives here */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Some inline styles from renderLegacySessionData.js can stretch the area.
+   Clamp graph panels so they never “steal” the height needed for sessions. */
+#dataOverlay .graph-panel-wrapper{ align-items: flex-start; } /* don’t vertically center/tall */
+#dataOverlay .graph-panel{ flex: 0 0 auto; max-height: 55vh; overflow: hidden; }
+
+/* The line graph uses inline 49vh heights; keep them but never exceed the panel */
+#dataOverlay #lineGraph,
+#dataOverlay #lineGraph canvas{
+  max-height: 55vh !important;
+}
+
+/* Ensure any inner wrappers can’t force huge heights */
+#dataOverlay .charts-container-full,
+#dataOverlay .quadrant-grid,
+#dataOverlay .grid-wrapper{
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+/* If anything inside was absolutely positioned to fill, let the scroller win */
+#dataOverlay .data-content > *{ position: relative; }
+
+/* == FINAL authoritative layout (restores scroll + fills height) == */
+
+/* Dialog body: flex column (header fixed, content fills) */
+#dataOverlay .data-overlay-inner{
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Main 3-column area: fills dialog, can shrink */
+#dataOverlay .main-container{
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  align-items: stretch !important;
+  align-content: stretch !important;
+}
+
+/* Middle column: tabs fixed, content scrolls */
+#dataOverlay .middle-panel{
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;     /* CRITICAL: allow inner scroll */
+  overflow: hidden !important;   /* keep rounded borders tidy */
+}
+
+/* Tabs stay auto-height */
+#dataOverlay .mode-tabs{
+  flex: 0 0 auto !important;
+}
+
+/* Scroll lives here */
+#dataOverlay .data-content{
+  flex: 1 1 auto !important;
+  min-height: 0 !important;      /* CRITICAL */
+  height: auto !important;       /* avoid fighting parents */
+  overflow: auto !important;     /* restore scrollbar */
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.6rem;        /* small breathing room */
+}
+
+/* Prevent inner wrappers from forcing huge heights */
+#dataOverlay .charts-container-full,
+#dataOverlay .quadrant-grid,
+#dataOverlay .grid-wrapper{
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  margin-bottom: 0 !important;
+}
+
+/* Clamp graph panels so sessions list still visible/scrollable */
+#dataOverlay .graph-panel-wrapper{ align-items: flex-start !important; }
+#dataOverlay .graph-panel{ flex: 0 0 auto !important; max-height: 55vh; overflow: hidden; }
+
+/* Line graph cap (renderer uses vh heights) */
+#dataOverlay #lineGraph,
+#dataOverlay #lineGraph canvas{ max-height: 55vh !important; }

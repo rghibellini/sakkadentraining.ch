@@ -1,0 +1,1518 @@
+/* ==========================================================================
+   A) THEME & RESET
+   - Define tokens (light/dark)
+   - Minimal reset & base typography
+   ========================================================================== */
+
+/* === THEME TOKENS (from your file) === */
+:root {
+  --bg: #ffffff;         /* page background */
+  --text: #173C56;       /* primary text */
+  --card: #ffffff;       /* card/panel surfaces */
+  --panel: #f0f0f0;      /* side panels, lists */
+  --muted: #666666;      /* subtle text */
+  --border: #e0e0e0;     /* dividers */
+  --accent: #173C56;     /* brand accent (links/buttons) */
+  --shadow: rgba(0,0,0,0.1);
+} /* source: styles.css tokens. :contentReference[oaicite:0]{index=0} */
+
+/* === DARK THEME OVERRIDES (scoped to .theme-dark on <body>) === */
+body.theme-dark {
+  --bg: #3a3a3a;
+  --text: #f1f1f1;
+  --card: #4a4a4a;
+  --panel: #4f4f4f;
+  --muted: #cccccc;
+  --border: #666666;
+  --accent: #173C56;
+  --shadow: rgba(0,0,0,0.25);
+} /* source: styles.css dark overrides. :contentReference[oaicite:1]{index=1} */
+
+/* === MINIMAL RESET === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+} /* source: styles.css reset. :contentReference[oaicite:2]{index=2} */
+
+/* === BASE TYPOGRAPHY (no layout rules here) === */
+html, body { height: 100%; }
+
+body {
+  font-family: 'Montserrat', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+} /* taken from your body styles, without flex/centering/overflow. :contentReference[oaicite:3]{index=3} */
+
+/* ==========================================================================
+   B) APP SHELL & LAYOUT
+   - Overall container and primary regions
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Main area */
+.main-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease;
+  padding-top: 5vh;   /* avoids overlap with fixed UI */
+  padding-bottom: 0;
+}
+
+/* When the fixed instruction panel is open */
+.main-content.instructions-active {
+  transform: translateY(-100vh);
+}
+
+/* When settings/sidebar shifts content */
+.main-content.shifted {
+  transform: translateX(-21vw);
+}
+
+/* Shared layout for right pane */
+.main-content,
+.tabs-right {
+  position: relative;
+  width: 100%;
+  max-width: 100vw;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+}
+
+/* Two-column shell for docs/infos */
+.vertical-tabs-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.tabs-left {
+  width: 200px;
+  min-width: 200px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.tabs-right {
+  position: relative;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow-x: auto;
+}
+
+/* Nav stacks inside the left column */
+.vertical-tabs {
+  display: flex;
+  height: 100%;
+}
+
+.main-topic-list,
+.sub-tab-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+}
+
+/* Content area on the right */
+.info-content-area {
+  flex-grow: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+/* Small-screen padding tweak for right pane */
+@media (max-width: 768px) {
+  .tabs-right { padding: 0.5rem; }
+}
+
+/* ==========================================================================
+   C) NAVIGATION & TABS
+   - Tabs, active/hover states
+   ========================================================================== */
+
+/* Wrapper that holds the two nav lists (topics + subtabs) */
+.vertical-tabs {
+  display: flex;
+  height: 100%;
+} /* source: styles.css. :contentReference[oaicite:0]{index=0} */
+
+/* Left-side nav lists */
+.main-topic-list,
+.sub-tab-list {
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+} /* source: styles.css. :contentReference[oaicite:1]{index=1} */
+
+/* Individual tab items */
+.main-tab,
+.sub-tab-list li {
+  padding: 10px;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  transition: background 0.2s;
+} /* source: styles.css. :contentReference[oaicite:2]{index=2} */
+
+/* Hover state */
+.main-tab:hover,
+.sub-tab-list li:hover {
+  background-color: #e0e0e0; /* consider swapping to a token later */
+} /* source: styles.css. :contentReference[oaicite:3]{index=3} */
+
+/* Active state */
+.main-tab.active,
+.sub-tab-list li.active {
+  background-color: var(--text);
+  color: white;
+} /* source: styles.css. :contentReference[oaicite:4]{index=4} */
+
+/* ==========================================================================
+   D) MEDIA & TYPOGRAPHY UTILITIES
+   - Generic text and image helpers
+   ========================================================================== */
+
+/* --- Typography utilities --- */
+.bold {
+  font-weight: 700;
+}
+
+/* --- Image helpers --- */
+.tabs-right img,
+.page-section img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1vw;
+  box-shadow: 0 2px 8px var(--shadow);
+  display: block;
+  margin: 1rem auto;
+}
+
+img[src*="portrait.jpg"] {
+  max-height: 300px;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+/* --- Text sizing in right content pane --- */
+.tabs-right p,
+.tabs-right li,
+.tabs-right span {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Branding: logo sizing (added) */
+/* Make logos smaller */
+.login-logo {                    /* login page logo */
+  width: auto;
+  max-width: 250px;              /* make it small; change to 32px if you want even smaller */
+  height: auto;
+  display: block;
+  margin: 0 auto 0.5rem;
+}
+
+#logoMain,                      /* app (main_content.html) logo */
+#mainContent .logo {
+  width: auto;
+  max-width: 100px;              /* same small cap in the app */
+  height: auto;
+  display: block;
+  margin: 0 auto 0.5rem;
+}
+
+/* ==========================================================================
+   E) GLOBAL BUTTONS
+   - One system with variants; prefer classes over IDs for styling
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--btn-h, 40px);
+  padding: 0 1rem;
+  border-radius: var(--radius, 8px);
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0,0,0,0.1));
+  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+
+/* Variants */
+.btn--primary {
+  background: var(--accent);
+  color: var(--accent-contrast, #fff);
+  border-color: transparent;
+}
+
+.btn--ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+.btn--danger {
+  background: #e5484d;
+  color: #fff;
+  border-color: transparent;
+}
+
+/* Icon-only button */
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-btn img.icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Special layout variants */
+.btn--bar {
+  width: 100%;
+  height: 50px;
+  border-radius: 0;
+  justify-content: center;
+}
+
+.btn--fab {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  box-shadow: var(--shadow-md, 0 4px 8px rgba(0,0,0,0.2));
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+}
+
+/* ==========================================================================
+   F) FORMS
+   - Login form, generic inputs, selects, groups, messages
+   ========================================================================== */
+
+/* Shared form wrapper */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form .field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.form label {
+  font-size: 14px;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.form input,
+.form select,
+.form textarea {
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius, 6px);
+  background: var(--card);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.form .help {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+/* Login form box */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 360px; /* a touch wider than 320px */
+  gap: 1.25rem;     /* a tad more breathing room */
+  background: var(--card);
+  padding: 2rem;
+  border-radius: 12px;  /* slightly softer than 8px */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12); /* richer, but still subtle */
+  border: 1px solid var(--border); /* adds definition like the old CSS */
+}
+
+.login-form label {
+  font-size: 15px;
+  font-weight: 700;      /* like your old CSS */
+  color: var(--text);
+  margin-bottom: 0.35rem;
+}
+
+.login-form input,
+.login-form select,
+.login-form textarea {
+  padding: 0.75rem;
+  font-size: 16px;                 /* readable default */
+  border: 1px solid var(--border);
+  border-radius: 10px;             /* softer, matches the card */
+  background: var(--card);
+  color: var(--text);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.login-form input:focus,
+.login-form select:focus,
+.login-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(23, 60, 86, 0.15); /* subtle themed ring */
+}
+
+/* Compact variant used inside register/reset/delete panels */
+.login-form.small-form {
+  width: min(90vw, 360px);
+  background: var(--card);
+  padding: 1rem;
+  border-radius: var(--radius, 8px);
+  box-shadow: var(--shadow-md, 0 4px 8px rgba(0,0,0,0.1));
+}
+.login-form.small-form h2 {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+/* Row of login buttons */
+.login-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Login buttons — base + variants */
+.login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+
+  box-shadow: var(--shadow-sm, 0 2px 4px rgba(0,0,0,0.1));
+  transition: background .15s ease, color .15s ease, transform .1s ease, border-color .15s ease;
+}
+.login-btn:hover   { transform: translateY(-1px); }
+.login-btn:active  { transform: translateY(0); }
+
+/* Primary action (Login, Submit) */
+.login-btn--primary,
+#loginBtn { /* also style the existing id in case you don't add the class in HTML */
+  background: var(--accent);
+  color: var(--accent-contrast, #fff);
+  border-color: transparent;
+  display: block;
+  margin: 0.5vh auto 0 auto;
+}
+.login-btn--primary:hover,
+#loginBtn:hover { filter: brightness(0.95); }
+
+/* Ghost / neutral (Zurück, etc.) */
+.login-btn--ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+/* Danger (Delete account) — you already use class="login-btn danger" in index.php */
+.login-btn.danger {
+  background: #e5484d;
+  color: #fff;
+  border-color: transparent;
+}
+.login-btn.danger:hover { filter: brightness(0.95); }
+
+/* Password visibility toggle (positioned within input wrapper) */
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+/* Feedback / error messages */
+.feedback-msg,
+#loginError,
+#resetMessage {
+  font-size: 14px;
+  margin-top: 0.5rem;
+}
+
+.feedback-msg { color: green; }
+#loginError { color: red; }
+#resetMessage { color: orange; }
+
+/* Layout helpers */
+.input-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.input-select {
+  width: 100%;
+  max-width: 200px;
+}
+
+.grid-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+/* Checkbox & radio */
+input[type="checkbox"],
+input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+/* Number input tweaks */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+/* === Login panels (compat with index.php toggling) === */
+.form-panel {
+  position: absolute;
+  inset: 0;                     /* top/right/bottom/left = 0 */
+  background: rgba(249, 249, 249, 0.98);
+  display: none;                /* hidden by default */
+  align-items: center;
+  justify-content: center;
+  z-index: 100;                 /* above the base login form */
+}
+.form-panel.active { display: flex; }
+
+/* The panels live inside the left column, anchor them there */
+.login-left { position: relative; }
+
+/* ==========================================================================
+   G) PANELS & OVERLAYS
+   - Settings, Profile, Data (modal/slide panels)
+   ========================================================================== */
+
+/* ---------------- Settings ---------------- */
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 900;
+  display: none;
+}
+.settings-overlay.active {
+  display: block;
+}
+
+.settings-panel {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  max-width: 90%;
+  height: 100%;
+  background: var(--card);
+  box-shadow: var(--shadow-md, 0 4px 10px rgba(0,0,0,0.2));
+  transition: right 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+.settings-panel.open-fixed {
+  right: 0;
+}
+.settings-panel-centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  max-width: 95%;
+  height: auto;
+  max-height: 80vh;
+  border-radius: var(--radius, 8px);
+}
+
+.settings-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.settings-columns {
+  display: flex;
+  gap: 1rem;
+}
+.settings-col {
+  flex: 1;
+}
+.setting-group {
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+.setting {
+  margin-bottom: 0.75rem;
+}
+
+/* Quadrant grid layout matches HTML rows */
+.checkbox-grid {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.grid-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: .35rem;
+}
+
+.checkbox-item {
+  display: flex; align-items: center; justify-content: center;
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: 22px; height: 22px;   /* uniform squares */
+}
+
+.save-settings-wrapper {
+  border-top: 1px solid var(--border);
+  padding: 0.75rem;
+  text-align: right;
+  background: var(--panel);
+}
+.settings-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+/* ---------------- Profile ---------------- */
+.profile-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 900;
+  display: none;
+}
+.profile-panel-overlay.active {
+  display: block;
+}
+
+.profile-panel {
+  position: fixed;
+  top: 0;
+  right: -350px;
+  width: 350px;
+  max-width: 90%;
+  height: 100%;
+  background: var(--card);
+  box-shadow: var(--shadow-md, 0 4px 10px rgba(0,0,0,0.25));
+  transition: right 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+.profile-panel.open {
+  right: 0;
+}
+
+.profile-panel-header {
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.profile-panel-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.profile-panel-btn {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1100;
+}
+
+/* ---------------- Data viewer ---------------- */
+.data-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 950;
+  display: none;
+}
+.data-overlay.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.data-overlay-inner {
+  background: var(--card);
+  width: 90%;
+  max-width: 1200px;
+  height: 90%;
+  border-radius: var(--radius, 8px);
+  box-shadow: var(--shadow-md, 0 4px 8px rgba(0,0,0,0.2));
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#dataIframe {
+  flex: 1;
+  width: 100%;
+  border: none;
+}
+
+#closeDataOverlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   H) GAME STAGE & HUD
+   - Canvas layers, targets, metrics, mode toolbar
+   ========================================================================== */
+
+/* Background & canvas layers */
+#backgroundLayer {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+#gameArea {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  z-index: 1;
+}
+#gameArea.active {
+  cursor: crosshair; /* example state when running */
+}
+
+#oksCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Fixation & target elements */
+#fixationDot {
+  position: absolute;
+  width: 2vw;
+  height: 2vw;
+  background-color: red;
+  border-radius: 50%;
+  z-index: 10;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+#target {
+  width: 20px;
+  height: 20px;
+  background-color: blue;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+}
+
+/* HUD text panel */
+.metrics {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--text);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius, 6px);
+  font-size: 14px;
+  z-index: 20;
+}
+
+.blue-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: blue;
+  border-radius: 50%;
+  margin-right: 0.25rem;
+}
+
+/* Mode toolbar (top-centered, fixed) */
+.mode-button-bar {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: .5rem;
+  z-index: 1050;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(6px);
+  padding: .5rem .75rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: 0 4px 10px var(--shadow);
+}
+
+/* Base mode button chip */
+.mode-btn {
+  padding: .5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background .2s, color .2s, transform .1s;
+}
+.mode-btn:hover {
+  background: var(--accent);
+  color: var(--accent-contrast, #fff);
+}
+
+/* Legacy color classes used in HTML */
+.mode-btn.grey      { background: #e9ecef; color: #173C56; }
+.mode-btn.lightblue { background: #e6f1f8; color: #173C56; }
+.mode-btn.blue      { background: #173C56; color: #fff; border-color: transparent; }
+
+.game-active .mode-button-bar,
+.game-active .title,
+.game-active .metrics,
+.game-active .author-text,
+.game-active #hilfeBtn,
+.game-active #dataBtn,
+.game-active #mainLogo { display:none; }
+
+/* ==========================================================================
+   I) INSTRUCTION PANEL / WALKTHROUGH
+   - Slide-in instructions, pagination dots, progress bars, arrows
+   ========================================================================== */
+
+/* Panel container */
+.instruction-panel {
+  position: fixed;
+  bottom: -100vh;           /* slide up from bottom */
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--card);
+  z-index: 1000;
+  transition: bottom 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} /* source.  */
+
+.instruction-panel.active { bottom: 0; } /* source. :contentReference[oaicite:1]{index=1} */
+
+/* Inner content */
+.instruction-content {
+  width: 80%;
+  height: 80%;
+  text-align: center;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 2vw;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+} /* source.  */
+
+.instruction-text {
+  margin-top: 2vh;
+  font-size: 1.5vw;
+  color: var(--text);
+} /* source.  */
+
+/* Arrow controls (prev/next) */
+.instruction-arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 3vw;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0 2vw;
+  z-index: 1100;
+} /* source. :contentReference[oaicite:4]{index=4} */
+
+.instruction-arrow.left,
+.instruction-left { left: 2vw; }   /* alias keeps old class working */  /* source. :contentReference[oaicite:5]{index=5} */
+.instruction-arrow.right,
+.instruction-right { right: 2vw; } /* alias keeps old class working */  /* source. :contentReference[oaicite:6]{index=6} */
+.instruction-arrow.top { top: 2vw; transform: none; }
+.instruction-arrow.bottom { bottom: 2vw; top: auto; transform: none; }
+
+#instructionPanel:not(.active) .instruction-arrow { display: none; } /* source. :contentReference[oaicite:7]{index=7} */
+
+/* Pagination dots */
+.pagination-dots {
+  position: absolute;
+  bottom: 10vh;                  /* sits above bottom UI */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5vw;
+  z-index: 1001;
+} /* source.  */
+
+.pagination-dots .dot {
+  width: 0.8vw;
+  height: 0.8vw;
+  background: #ccc;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+} /* source. :contentReference[oaicite:9]{index=9} */
+
+.pagination-dots .dot.is-active,
+.pagination-dots .dot.active {    /* keep .active for backward compat */
+  background: var(--accent);
+} /* source. :contentReference[oaicite:10]{index=10} */
+
+/* Progress bars */
+.progress-bar {
+  position: fixed;               /* relative to viewport */
+  width: 100vw;
+  height: 10px;
+  background: #e0e0e0;
+  z-index: 1001;
+  overflow: hidden;
+  display: none;                 /* shown by JS */
+} /* source.  */
+
+.progress-bar.top-bar { top: 0; left: 0; }       /* source. :contentReference[oaicite:12]{index=12} */
+.progress-bar.bottom-bar { bottom: 0; left: 0; } /* source. :contentReference[oaicite:13]{index=13} */
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s ease;
+} /* source. :contentReference[oaicite:14]{index=14} */
+
+/* optional variant used by JS for duration animation */
+.progress-fill.duration-fill { transition: width linear; } /* source. :contentReference[oaicite:15]{index=15} */
+.progress-fill.grey { background: #808080; }                /* source. :contentReference[oaicite:16]{index=16} */
+
+/* Tick marks for trials under the bar */
+.trial-increments {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+} /* source. :contentReference[oaicite:17]{index=17} */
+
+.trial-increments .increment {
+  flex: 1;
+  border-right: 1px solid rgba(0, 0, 0, 0.2);
+}
+.trial-increments .increment:last-child { border-right: none; } /* source. :contentReference[oaicite:18]{index=18} */
+
+/* Optional: image arrows used elsewhere (kept for completeness) */
+.nav-arrow {
+  width: 4vw;
+  height: auto;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1001;
+}
+.left-arrow { left: 2vw; }
+.right-arrow { right: 2vw; } /* source.  */
+
+/* ==========================================================================
+   J) LOGIN SCREEN & SLIDER
+   - Split layout, carousel pages, fixed nav bars and dots
+   ========================================================================== */
+
+/* Full viewport split layout */
+.login-wrapper {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+} /* source. :contentReference[oaicite:0]{index=0} */
+
+.login-left {
+  flex: 1;
+  background: #fff;              /* consider tokenizing later */
+  padding: 4vh 4vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;            /* anchors .form-panel in your CSS */
+} /* source.  */
+
+.login-right {
+  flex: 1;
+  background: #f0f4f8;           /* consider tokenizing later */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100vh;
+  width: 100%;
+} /* source. :contentReference[oaicite:2]{index=2} */
+
+/* Branding title under logo */
+.login-title {
+  font-weight: 700;
+  font-size: 2rem;
+  color: var(--text);
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+/* Action links under the form */
+.login-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.link-btn:hover { color: #2a5674; }
+
+.inline-links {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.login-text.centered-text { text-align: center; width: 100%; display: block; }
+
+/* Carousel wrapper & pages */
+.page-container {
+  position: relative;
+  width: 100%;
+  padding: 4vh 4vw;
+  overflow: visible;
+  z-index: 1;                    /* below nav-bar and dots */
+} /* source. :contentReference[oaicite:3]{index=3} */
+
+.page-section { display: none; }           /* inactive */
+.page-section.active { display: block; }   /* active page */  /* source. :contentReference[oaicite:4]{index=4} */
+
+/* Fixed nav bars (left/right) */
+.nav-bar {
+  position: fixed;               /* stays in viewport */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3vw;
+  height: 3vw;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  color: var(--text);
+  z-index: 100;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.nav-bar:hover { background: var(--accent); color: #fff; }    /* source. :contentReference[oaicite:5]{index=5} */
+
+.nav-bar-right { right: 1vw; }                                  /* source. :contentReference[oaicite:6]{index=6} */
+#leftNavBar { left: calc(50% + 4.2vw); }                        /* legacy id; prefer .nav-bar. :contentReference[oaicite:7]{index=7} */
+
+.nav-arrow-img {
+  width: 2vw;
+  height: auto;
+  object-fit: contain;
+} /* source. :contentReference[oaicite:8]{index=8} */
+
+/* Dots row (fixed at bottom of right half) */
+.dots {
+  position: fixed;
+  bottom: 3vh;
+  left: 75%;                    /* midpoint of right half */
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1vw;
+  z-index: 100;
+} /* source. :contentReference[oaicite:9]{index=9} */
+
+.dots span {
+  width: 1vw;
+  height: 1vw;
+  background: #ccc;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background 0.3s;
+} /* source. :contentReference[oaicite:10]{index=10} */
+
+/* Active dot (supports both .is-active and legacy .active) */
+.dots span.is-active,
+.dots span.active { background: var(--accent); } /* source. :contentReference[oaicite:11]{index=11} */
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .nav-bar { width: 5vw; height: 5vw; }
+  .nav-arrow-img { width: 3vw; }
+  .dots { left: 75%; }
+  .dots span { width: 1.5vw; height: 1.5vw; }
+} /* source. :contentReference[oaicite:12]{index=12} */
+
+/* ==========================================================================
+   K) HEADER ACTIONS (TOP/BOTTOM CONTROLS)
+   - Settings, profile, data, logout
+   ========================================================================== */
+
+/* Base icon-only buttons */
+button.icon-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+button.icon-btn:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+button.icon-btn img.icon {
+  width: 2.5vw;
+  height: 2.5vw;
+  object-fit: contain;
+  pointer-events: none; /* clicks go through the image */
+}
+
+/* Specific actions */
+.menu-btn {
+  position: absolute;
+  top: 1vh;
+  right: 1vw;
+  z-index: 2001;
+  color: #173C56;
+}
+
+.logout-btn {
+  position: absolute;
+  top: 1vh;
+  left: 1vw;
+  z-index: 2001;
+  color: #173C56;
+}
+
+.data-btn {
+  position: absolute;
+  bottom: 1vh;
+  left: 1vw;
+  z-index: 2001;
+  color: #173C56;
+}
+
+.profile-panel-btn {
+  position: absolute;
+  bottom: 1vh;
+  right: 1vw;
+  z-index: 2001;
+  color: #173C56;
+}
+
+/* Optional clusters (when grouping multiple buttons in corners) */
+.controls-top-left,
+.controls-top-right,
+.controls-bottom-left,
+.controls-bottom-right {
+  position: absolute;
+  display: flex;
+  gap: .5rem;
+}
+
+.controls-top-left    { top: 1rem; left: 1rem; }
+.controls-top-right   { top: 1rem; right: 1rem; }
+.controls-bottom-left { bottom: 1rem; left: 1rem; }
+.controls-bottom-right{ bottom: 1rem; right: 1rem; }
+
+/* ======================================================================
+   K1) THEME TOGGLE (dark mode slider)
+   ====================================================================== */
+.theme-toggle-bar {
+  position: fixed;
+  bottom: 16px;
+  left: 0; right: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.theme-toggle {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: 0 6px 20px var(--shadow);
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+
+.theme-toggle__input { position: absolute; opacity: 0; pointer-events: none; }
+.theme-toggle__icon { width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; opacity: .6; transition: opacity .2s; }
+.theme-toggle__icon svg { width: 18px; height: 18px; fill: var(--text); }
+
+.theme-toggle__track { position: relative; width: 48px; height: 26px; background: var(--muted); border-radius: 999px; transition: background .2s; }
+.theme-toggle__thumb { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--bg); box-shadow: 0 2px 8px rgba(0,0,0,.25); transition: transform .22s, background .2s; }
+
+.theme-toggle__input:checked + .theme-toggle[role="switch"] .theme-toggle__thumb { transform: translateX(22px); }
+.theme-toggle__input:not(:checked) + .theme-toggle .theme-toggle__icon--sun  { opacity: 1; }
+.theme-toggle__input:checked       + .theme-toggle .theme-toggle__icon--moon { opacity: 1; }
+
+/* ==========================================================================
+   L) HELP OVERLAY
+   - Onboarding arrows and labels
+   ========================================================================== */
+
+/* Fullscreen overlay behind help hints */
+.hilfe-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);  /* semi-transparent scrim */
+  z-index: 3000;
+  display: none;                /* toggled on when active */
+}
+.hilfe-overlay.active { display: block; }
+
+/* Bubble labels */
+.help-text {
+  position: absolute;
+  padding: 0.5rem 1rem;
+  background: white;
+  color: var(--text);
+  border-radius: var(--radius, 8px);
+  font-size: 1rem;
+  font-family: 'Montserrat', Arial, sans-serif;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 3100;
+}
+
+/* Arrows (base) */
+.arrow {
+  width: 0;
+  height: 0;
+  position: absolute;
+  border-style: solid;
+  z-index: 3101;
+}
+
+/* Arrow direction variants */
+.arrow-up {
+  border-width: 0 10px 10px 10px;
+  border-color: transparent transparent white transparent;
+}
+.arrow-down {
+  border-width: 10px 10px 0 10px;
+  border-color: white transparent transparent transparent;
+}
+.arrow-left {
+  border-width: 10px 10px 10px 0;
+  border-color: transparent white transparent transparent;
+}
+.arrow-right {
+  border-width: 10px 0 10px 10px;
+  border-color: transparent transparent transparent white;
+}
+
+/* Target-specific placements (examples) */
+.arrow-settings {
+  top: 1rem;
+  right: 3rem;
+}
+.help-settings {
+  top: 1rem;
+  right: 5rem;
+}
+
+/* ==========================================================================
+   M) MODE-SPECIFIC (NAMESPACE!)
+   - Scope all mode visuals to avoid leaks across modes
+   ========================================================================== */
+
+/* Recommended root: <body data-mode="schwimmen"> or <div class="mode mode--schwimmen"> */
+
+/* -- Schwimmen ------------------------------------------------------------ */
+.mode--schwimmen .duck {
+  width: 4vw;
+  height: auto;
+  max-width: 130px;
+  pointer-events: none;
+  user-select: none;
+  position: absolute;
+  object-fit: contain;
+  transition: left 0.5s linear, top 0.5s linear;
+}
+
+.mode--schwimmen .duck-guide {
+  width: 2.5vw;
+  height: auto;
+  max-width: 100px;
+  opacity: 0.8;
+  pointer-events: none;
+  user-select: none;
+  position: absolute;
+  object-fit: contain;
+  transition: left 0.5s linear, top 0.5s linear;
+}
+
+.mode--schwimmen .bread {
+  width: 5vw;
+  height: auto;
+  max-width: 100px;
+  cursor: pointer;
+  position: absolute;
+  z-index: 6;
+  object-fit: contain;
+  transition: left 0.5s linear, top 0.5s linear;
+}
+
+/* -- Vergleich ------------------------------------------------------------ */
+.mode--vergleich .vergleich-grid {
+  width: 80%;
+  height: 80%;
+  position: absolute;
+  left: 10%;
+  top: 10%;
+  z-index: 3;
+}
+
+.mode--vergleich .grid-cell {
+  float: left;
+  background-size: 80%;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  border: none;
+}
+
+.mode--vergleich .grid-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  background: black;
+  z-index: 5;
+}
+
+/* -- Autofahren ----------------------------------------------------------- */
+.mode--autofahren img[src*="autofahren"] {
+  position: absolute;
+  object-fit: contain;
+}
+
+/* -- Schiessen ------------------------------------------------------------ */
+/* .mode--schiessen .target-board {
+  placeholder: add background/board styling here 
+}/* 
+
+/* .mode--schiessen .bullet {
+  placeholder: add bullet marker styling here
+}/*
+
+/* -- Fangen --------------------------------------------------------------- */
+.mode--fangen .goal {
+  position: absolute;
+  background-color: rgba(50, 205, 50, 0.4);
+  height: 100%;
+}
+.mode--fangen .footballer,
+.mode--fangen .football,
+.mode--fangen .goal-image {
+  position: absolute;
+}
+
+/* -- Reihenfolge ---------------------------------------------------------- */
+.mode--reihenfolge .cheese {
+  position: absolute;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: top;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* -- Punkte --------------------------------------------------------------- */
+.mode--punkte .target {
+  width: 2vw;
+  height: 2vw;
+  background-color: blue;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 10;
+  cursor: pointer;
+}
+
+/* -- Folgen --------------------------------------------------------------- */
+.mode--folgen .moving-dot {
+  width: 2vw;
+  height: 2vw;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 10;
+  transition: left 0.5s ease, top 0.5s ease;
+}
+
+/* -- Normal ---------------------------------------------------------------
+.mode--normal {
+  placeholder: normal mode doesn’t add extra visuals
+} /*
+
+/* ==========================================================================
+   UTILITIES (OPTIONAL)
+   - Small one-line helpers: spacing, visibility, layout
+   ========================================================================== */
+
+.u-hidden { display: none !important; }
+.u-sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+.u-flex { display: flex !important; }
+.u-grid { display: grid !important; }
+.u-center { display:grid; place-items:center; }
+.u-gap { gap: var(--gap); }
+.u-gap-sm { gap: var(--gap-sm); }
+
+/* Compat: keep game area hidden until activated by JS */
+#gameArea { display: none; background: transparent; }
+#gameArea.active { display: block; }
+
+/* Compat: keep the background truly behind the app */
+#backgroundLayer {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: -1 !important;
+}
+
+/* ==========================================================================
+   END
+   ========================================================================== */
