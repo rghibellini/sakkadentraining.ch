@@ -336,36 +336,56 @@ img[src*="portrait.jpg"] {
   z-index: 1000;
 }
 
-/* === Close(X) button used in all panels/overlays === */
-.close-button{
+/* Shared “nice” close button (matches Data Interface) */
+.close-button {
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  font-size: clamp(18px, 1.4vw, 22px);
+  line-height: 1;
+  padding: .25rem .4rem;
+  border-radius: .4rem;
+  transition: background .2s, color .2s, transform .08s;
+}
+.close-button:hover {
+  color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+}
+.close-button:active { transform: scale(0.98); }
+
+/* Pin the close button inside these cards (top-right) */
+.settings-panel-centered .close-button,
+.profile-panel .close-button {
   position: absolute;
   top: 10px;
   right: 10px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: rgba(0,0,0,0.45);
-  color: #fff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-  z-index: 5;
 }
-.close-button:hover{ filter: brightness(1.08); }
 
 /* === Button sizing helper for a larger Start button === */
-.btn--xl { --btn-h: 64px; padding: 0 1.5rem; font-size: clamp(18px, 2.5vw, 28px); }
+.btn--xl {
+  --btn-h: 64px;
+  padding: 0 3rem; /* ⬅ doubled from 1.5rem */
+  font-size: clamp(18px, 2.5vw, 28px);
+}
 
 /* === Exit (leave game) button: same positioning system as the 4 corner icons === */
 #exitGameBtn {
-  position: absolute;
-  top: 3vh;
-  right: 1vw;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-size: 1vw;              /* smaller than Start */
+  padding: 0.5vh 1vw;          /* slim padding */
+  margin-top: 1vh;
+  background: #173C56;
+  color: white;
+  border: none;
+  border-radius: 0.4vw;
+  cursor: pointer;
   z-index: 2002;
+  transition: background 0.3s ease;
+}
+
+#exitGameBtn:hover {
+  background: #2a5674;
 }
 
 /* ==========================================================================
@@ -622,7 +642,7 @@ input[type="number"] {
 .settings-panel-centered,
 .profile-panel {
   position: relative;
-  width: min(600px, 95vw);
+  width: min(500px, 85vw);
   max-height: 80vh;
   height: auto;
   background: var(--card);
@@ -653,35 +673,49 @@ input[type="number"] {
 }
 .setting { margin-bottom: 0.75rem; }
 
-/* Quadrant grid layout matches HTML rows */
-.checkbox-grid {
-  display: flex;
-  flex-direction: column;
-  gap: .35rem;
+/* Make settings checkboxes align left */
+.settings-column-left .checkbox-item,
+.settings-column-right .checkbox-item {
+  justify-content: flex-start;   /* ⬅ push input+label to the left */
+  text-align: left;              /* ensure text aligns left */
 }
+
+.settings-column-left .checkbox-item span,
+.settings-column-right .checkbox-item span {
+  flex: unset;                   /* ⬅ remove auto-expanding span */
+}
+
+/* Quadrant grid layout matches HTML rows */
+.checkbox-grid { --cb: 40px; }               /* checkbox box size */
 
 .grid-row {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: .35rem;
+  grid-template-columns: repeat(5, var(--cb)); /* fixed width per column */
+  column-gap: .2rem;
+  row-gap: .2rem;
+  justify-content: center;
 }
 
-.checkbox-item {
+/* Only grid cells should be square-centered */
+.checkbox-grid .checkbox-item {
+  width: var(--cb);
+  height: var(--cb);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.checkbox-item input[type="checkbox"] {
-  width: 22px;
-  height: 22px;   /* uniform squares */
+.checkbox-grid .checkbox-item input[type="checkbox"] {
+  width: 100%;
+  height: 100%;
+  margin: 0;
 }
 
 .save-settings-wrapper {
-  border-top: 1px solid var(--border);
+  border-top: none;
   padding: 0.75rem;
-  text-align: right;
-  background: var(--panel);
+  text-align: center;
+  background: transparent;
 }
 
 /* ---------------- Profile inner layout ---------------- */
@@ -837,7 +871,7 @@ input[type="number"] {
   display: flex;
   gap: .5rem;
   z-index: 1050;
-  background: rgba(255,255,255,0.8);
+  background: var(--card);
   backdrop-filter: blur(6px);
   padding: .5rem .75rem;
   border: 1px solid var(--border);
@@ -845,26 +879,37 @@ input[type="number"] {
   box-shadow: 0 4px 10px var(--shadow);
 }
 
-/* Base mode button chip */
+/* defaults */
 .mode-btn {
-  padding: .5rem 1rem;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--panel);
-  color: var(--text);
-  cursor: pointer;
-  font-weight: 600;
-  transition: background .2s, color .2s, transform .1s;
+  padding:.5rem 1rem;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--text);
+  font-weight:600;
+  cursor:pointer;
+  transition:background .2s, color .2s, transform .1s, outline-color .2s;
 }
 .mode-btn:hover {
-  background: var(--accent);
-  color: var(--accent-contrast, #fff);
+  background:var(--accent);
+  color:var(--accent-contrast, #fff);
 }
 
-/* Legacy color classes used in HTML */
-.mode-btn.grey      { background: #e9ecef; color: #173C56; }
-.mode-btn.lightblue { background: #e6f1f8; color: #173C56; }
-.mode-btn.blue      { background: #173C56; color: #fff; border-color: transparent; }
+/* legacy colors */
+.mode-btn.grey      { background:#e9ecef; color:#173C56; }
+.mode-btn.lightblue { background:#77daff; color:#173C56; }
+.mode-btn.blue      { background:#173C56; color:#fff; border-color:transparent; }
+
+/* active: use a WHITE outline so thickness doesn't shift layout */
+.mode-btn.active {
+  outline:4px solid var(--accent);   /* default accent ring */
+  outline-offset:0;
+}
+
+/* dark buttons: force WHITE ring on active */
+.mode-btn.blue.active {
+  outline-color:#77daff;                /* white ring on dark blue */
+}
 
 .game-active .mode-button-bar,
 .game-active .title,
@@ -1228,13 +1273,16 @@ button.icon-btn img.icon {
 /* ======================================================================
    K1) THEME TOGGLE (dark mode slider)
    ====================================================================== */
+/* ======================================================================
+   K1) THEME TOGGLE (dark mode slider) + Hilfe on same pill
+   ====================================================================== */
 .theme-toggle-bar {
   position: fixed;
   bottom: 16px;
   left: 0; right: 0;
   display: flex;
   justify-content: center;
-  pointer-events: none;
+  pointer-events: none;           /* container stays click-through */
   z-index: 9999;
 }
 
@@ -1242,14 +1290,35 @@ button.icon-btn img.icon {
   pointer-events: auto;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 6px 10px;
+  gap: 12px;
+  padding: 6px 20px;       /* more padding inside pill */
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 999px;
   box-shadow: 0 6px 20px var(--shadow);
   cursor: pointer;
   transition: background .2s, border-color .2s;
+}
+
+.theme-toggle-pill {
+  pointer-events: auto;           /* children are clickable */
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 20px;
+  min-width: 220px;               /* ensure enough width */
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: 0 6px 20px var(--shadow);
+}
+
+/* tiny divider between the slider and Hilfe */
+.theme-toggle-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  opacity: .7;
 }
 
 .theme-toggle__input { position: absolute; opacity: 0; pointer-events: none; }
@@ -1263,33 +1332,35 @@ button.icon-btn img.icon {
 .theme-toggle__input:not(:checked) + .theme-toggle .theme-toggle__icon--sun  { opacity: 1; }
 .theme-toggle__input:checked       + .theme-toggle .theme-toggle__icon--moon { opacity: 1; }
 
-/* Help pill, visually attached to the slider on the right */
-#hilfeBtn {
-  position: fixed;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(calc(50% + 80px)); /* put it to the right of the centered slider */
-  z-index: 9999;
-
-  pointer-events: auto;
+/* Style the Hilfe button as a pill and ensure it participates in layout */
+.help-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-
-  padding: 6px 12px;
-  font-size: 14px;
-  font-weight: 600;
+  justify-content: center;
+  padding: 0 1rem;          /* room for the text */
+  height: 32px;
   border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--card);
   color: var(--text);
-  box-shadow: 0 6px 20px var(--shadow);
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;      /* prevent wrap */
   cursor: pointer;
+  transition: transform .1s, background .2s, color .2s, border-color .2s;
+}
+.help-btn:hover {
+  transform: translateY(-1px);
+  background: var(--accent);
+  color: var(--accent-contrast, #fff);
+  border-color: var(--accent);
 }
 
-#hilfeBtn:hover { filter: brightness(1.03); }
-
-#hilfeBtn:hover { filter: brightness(1.03); }
+/* compact tweak on very small screens */
+@media (max-width: 480px) {
+  .theme-toggle { gap: 8px; padding: 6px 8px; }
+  .theme-toggle #hilfeBtn { width: 30px; height: 30px; }
+}
 
 /* ==========================================================================
    L) HELP OVERLAY
@@ -1310,7 +1381,7 @@ button.icon-btn img.icon {
 .help-text {
   position: absolute;
   padding: 0.5rem 1rem;
-  background: white;
+  background: var(--panel);
   color: var(--text);
   border-radius: var(--radius, 8px);
   font-size: 1rem;
