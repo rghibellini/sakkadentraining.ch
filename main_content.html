@@ -35,31 +35,28 @@
         </span>
     </label>
 </div>
+
 <button id="hilfeBtn">Hilfe</button>
-<button id="exitGameBtn" class="icon-btn"
-    style="display: none; position: absolute; top: 1vh; right: 1vw; z-index: 2002;">
-    Verlassen
-</button>
+
+<button id="exitGameBtn" class="btn btn--danger" style="display:none;">Verlassen</button>
 
 <!-- Layers -->
 <div id="backgroundLayer"></div>
+
 <div id="trialProgressBar" class="progress-bar top-bar">
     <div class="progress-fill"></div>
 </div>
+
 <div id="mainContent" class="main-content">
     <img id="logoMain" class="logo" src="images/logo.png" alt="Logo">
-    <h1 class="title">Sakkaden Training</h1>
-    <p id="activeProfile" class="author-text">Profil: Kein Profil ausgewählt.</p>
-    <button id="startBtn" class="btn btn--primary"
-        style="margin:2vh auto; font-size:clamp(16px,2vw,24px);">Start</button>
+    <h1 class="title">Sakkadentraining</h1>
+    <p id="activeProfile" class="author-text">Kein Profil ausgewählt.</p>
+    <button id="startBtn" class="btn btn--primary btn--xl" style="margin:2vh auto;">Start</button>
     <button id="instructionsBtn" class="btn btn--ghost" style="margin: 1vh auto;">
         Anleitung <span class="arrow-down">↓</span>
     </button>
     <p class="author-text">von Dr. phil. Romain Ghibellini</p>
     <p class="author-text">Version 1.5</p>
-    <button class="icon-btn data-btn" id="dataBtn">
-        <img src="images/data.png" class="icon" alt="Daten">
-    </button>
     <div id="gameArea">
         <canvas id="oksCanvas"></canvas>
         <div id="fixationDot"></div>
