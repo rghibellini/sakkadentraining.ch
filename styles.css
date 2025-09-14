@@ -299,18 +299,23 @@ img[src*="portrait.jpg"] {
 
 /* Icon-only button */
 .icon-btn {
+  position: absolute;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 2001;
+}
+
+.icon-btn .icon {
   width: 40px;
   height: 40px;
-  padding: 0;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  object-fit: contain;
 }
-.icon-btn img.icon {
-  width: 20px;
-  height: 20px;
-}
+
+#logoutBtn   { top: 1vh; left: 1vw; }
+#dataBtn     { bottom: 1vh; left: 1vw; }
+#openProfilePanel { bottom: 1vh; right: 1vw; }
+#settingsBtn { top: 1vh; right: 1vw; }
 
 /* Special layout variants */
 .btn--bar {
@@ -568,34 +573,46 @@ input[type="number"] {
    ========================================================================== */
 
 /* ---------------- Settings ---------------- */
+/* Settings overlay */
 .settings-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 900;
   display: none;
+  display: none;
+  /* NEW: center children when visible */
+  align-items: center;
+  justify-content: center;
 }
-.settings-overlay.active {
-  display: block;
+.settings-overlay.active { display: flex; }
+
+/* Profile overlay */
+.profile-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 900;
+  display: none;
+  /* NEW: center children when visible */
+  align-items: center;
+  justify-content: center;
+}
+.profile-panel-overlay.active { display: flex; }
+
+/* Settings as a centered card */
+.settings-panel {
+  position: relative;
+  width: min(600px, 95vw);
+  max-height: 80vh;
+  height: auto;
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  padding: 1rem 1rem 0;       /* keep your inner content spacing */
+  overflow: auto;
 }
 
-.settings-panel {
-  position: fixed;
-  top: 0;
-  right: -400px;
-  width: 400px;
-  max-width: 90%;
-  height: 100%;
-  background: var(--card);
-  box-shadow: var(--shadow-md, 0 4px 10px rgba(0,0,0,0.2));
-  transition: right 0.3s ease;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-}
-.settings-panel.open-fixed {
-  right: 0;
-}
 .settings-panel-centered {
   position: fixed;
   top: 50%;
@@ -676,22 +693,17 @@ input[type="number"] {
   display: block;
 }
 
+/* Profile as a centered card */
 .profile-panel {
-  position: fixed;
-  top: 0;
-  right: -350px;
-  width: 350px;
-  max-width: 90%;
-  height: 100%;
+  position: relative;
+  width: min(600px, 95vw);
+  max-height: 80vh;
+  height: auto;
   background: var(--card);
-  box-shadow: var(--shadow-md, 0 4px 10px rgba(0,0,0,0.25));
-  transition: right 0.3s ease;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-}
-.profile-panel.open {
-  right: 0;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  padding: 1.5rem;
+  overflow: auto;
 }
 
 .profile-panel-header {
@@ -1201,15 +1213,6 @@ button.icon-btn img.icon {
   pointer-events: none; /* clicks go through the image */
 }
 
-/* Specific actions */
-.menu-btn {
-  position: absolute;
-  top: 1vh;
-  right: 1vw;
-  z-index: 2001;
-  color: #173C56;
-}
-
 .logout-btn {
   position: absolute;
   top: 1vh;
@@ -1222,14 +1225,6 @@ button.icon-btn img.icon {
   position: absolute;
   bottom: 1vh;
   left: 1vw;
-  z-index: 2001;
-  color: #173C56;
-}
-
-.profile-panel-btn {
-  position: absolute;
-  bottom: 1vh;
-  right: 1vw;
   z-index: 2001;
   color: #173C56;
 }
@@ -1286,6 +1281,34 @@ button.icon-btn img.icon {
 .theme-toggle__input:checked + .theme-toggle[role="switch"] .theme-toggle__thumb { transform: translateX(22px); }
 .theme-toggle__input:not(:checked) + .theme-toggle .theme-toggle__icon--sun  { opacity: 1; }
 .theme-toggle__input:checked       + .theme-toggle .theme-toggle__icon--moon { opacity: 1; }
+
+/* Help pill, visually attached to the slider on the right */
+#hilfeBtn {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(calc(50% + 80px)); /* put it to the right of the centered slider */
+  z-index: 9999;
+
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 0 6px 20px var(--shadow);
+  cursor: pointer;
+}
+
+#hilfeBtn:hover { filter: brightness(1.03); }
+
+#hilfeBtn:hover { filter: brightness(1.03); }
 
 /* ==========================================================================
    L) HELP OVERLAY
