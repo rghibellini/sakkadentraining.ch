@@ -355,8 +355,7 @@ img[src*="portrait.jpg"] {
 .close-button:active { transform: scale(0.98); }
 
 /* Pin the close button inside these cards (top-right) */
-.settings-panel-centered .close-button,
-.profile-panel .close-button {
+.settings-panel-centered .close-button {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -625,8 +624,7 @@ input[type="number"] {
    ========================================================================== */
 
 /* ---------------- Shared overlay (Settings + Profile) ---------------- */
-.settings-overlay,
-.profile-panel-overlay {
+.settings-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
@@ -636,11 +634,9 @@ input[type="number"] {
   justify-content: center;
 }
 .settings-overlay.active,
-.profile-panel-overlay.active { display: flex; }
 
 /* ---------------- Shared card (Settings + Profile) ---------------- */
-.settings-panel-centered,
-.profile-panel {
+.settings-panel-centered {
   position: relative;
   width: min(500px, 85vw);
   max-height: 80vh;
@@ -718,25 +714,109 @@ input[type="number"] {
   background: transparent;
 }
 
-/* ---------------- Profile inner layout ---------------- */
-.profile-panel-header {
-  font-weight: 600;
-  padding: 1rem;
-  border-bottom: 1px solid var(--border);
+/* === Profile overlay: two columns (list + right drawer) === */
+.profile-overlay {
+  position: fixed; inset: 0;
+  display: none;            /* toggled by JS */
+  grid-template-columns: 1fr 340px;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
 }
+.profile-overlay.active { display: grid; }
 
-.profile-panel-list {
-  flex: 1;
+/* Left card (list) */
+.profile-left {
+  background: var(--card, #fff);
+  border-radius: 12px;                        /* rounded like other panels */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  border: 1px solid var(--border);
+  margin: auto;                                /* center vertically in grid cell */
+  width: min(600px, 95vw);
+  max-height: 80vh;
+  padding: 1rem;
   overflow-y: auto;
-  padding: 1rem;
+}
+.profile-header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin-bottom: 8px;
+}
+.profile-actions { display: flex; gap: 8px; align-items: center; }
+.profile-toolbar { margin-bottom: 8px; }
+.profile-toolbar input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--text);
 }
 
-/* Optional helper (if you keep a floating profile toggle button) */
-.profile-panel-btn {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 1100;
+/* List + rows */
+.profile-list {
+  display: grid; gap: 6px;
+}
+.profile-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 160px 72px;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.profile-row:hover { background: color-mix(in oklab, var(--panel) 40%, transparent); }
+.profile-color { width: 20px; height: 20px; border-radius: 4px; border: 1px solid rgba(0,0,0,.1); }
+.profile-name { font-weight: 700; }
+.profile-date { color: var(--muted); font-size: 13px; }
+.profile-actions-row { display: flex; gap: 6px; justify-content: flex-end; }
+.profile-icon {
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 8px; background: var(--card);
+  cursor: pointer;
+}
+.profile-icon:hover { background: var(--panel); }
+
+/* Right drawer (small panel) */
+.profile-drawer {
+  background: var(--card, #fff);
+  border-left: 1px solid var(--border);
+  border-radius: 12px;                        /* rounded corners */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  margin: auto;                                /* center vertically */
+  padding: 1rem;
+  width: 300px;
+  max-height: 80vh;
+  overflow-y: auto;
+  display: none;                               /* show only when editing/adding */
+}
+.drawer-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+/* Color grid */
+.color-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px; margin-top: 6px;
+}
+.color-swatch {
+  width: 100%; padding-top: 100%; border-radius: 10px;
+  border: 2px solid transparent; cursor: pointer; position: relative;
+}
+.color-swatch[aria-checked="true"] { outline: 3px solid var(--text); }
+.color-swatch::after {
+  content: "✓"; color: #fff; font-weight: 800; position: absolute; right: 6px; bottom: 4px;
+  text-shadow: 0 1px 2px rgba(0,0,0,.35); display: none;
+}
+.color-swatch[aria-checked="true"]::after { display: block; }
+
+/* Responsive narrow screens: stack (overlay becomes vertical) */
+@media (max-width: 720px) {
+  .profile-overlay { grid-template-columns: 1fr; }
+  .profile-drawer { border-left: none; }
 }
 
 /* ---------------- Data viewer ---------------- */
@@ -778,6 +858,7 @@ input[type="number"] {
   right: 10px;
   cursor: pointer;
 }
+
 
 /* ==========================================================================
    H) GAME STAGE & HUD

@@ -1,0 +1,12 @@
+Add to Database:
+
+ALTER TABLE profiles
+  ADD COLUMN color VARCHAR(9) NULL;
+
+
+Persisting issues:
+- Autofahren Targets spawn at the top and not sides
+- Profile Panel invisible after closing it once
+
+Projects:
+- Change size of dot in Normal and Folgen mode. with ui

@@ -545,18 +545,77 @@
     </div> <!-- END .settings-panel-centered -->
 </div> <!-- END #settingsOverlay -->
 
-<!-- Profile Panel Overlay -->
-<div id="profilePanel" class="profile-panel-overlay" style="display: none;">
-    <div class="profile-panel">
-        <button id="closeProfilePanel" class="close-button">✖</button> <!-- ✅ Inside the panel -->
+<div id="profileOverlay" class="profile-overlay" role="dialog" aria-modal="true" aria-labelledby="profilesTitle">
 
-        <div class="profile-header">
-            <input type="text" id="profileSearchInput" placeholder="Profile suchen..." />
-            <button id="addProfileBtn">+</button>
+    <!-- LEFT: list & actions -->
+    <section class="profile-left">
+        <header class="profile-header">
+            <h2 id="profilesTitle">Profile</h2>
+            <div class="profile-toolbar">
+                    <input id="profileSearch" type="text" placeholder="Profile suchen…" />
+                </div>
+            <div class="profile-actions">
+                <button id="addProfileBtn" class="btn btn--primary">+ Neues Profil</button>
+                <button id="closeProfileOverlay" class="close-button" title="Schliessen">✖</button>
+            </div>
+        </header>
+
+        <div class="profile-toolbar">
+            <!-- space kept if you later add filters/checks -->
         </div>
 
-        <ul id="profileListContainer"></ul>
-    </div>
+        <!-- Rendered list -->
+        <div id="profileList" class="profile-list" aria-live="polite"></div>
+    </section>
+
+    <!-- RIGHT: small drawer for create/edit -->
+    <aside id="profileDrawer" class="profile-drawer" aria-labelledby="drawerTitle">
+        <header class="drawer-header">
+            <h3 id="drawerTitle">Profil anlegen</h3>
+            <button type="button" id="closeDrawerBtn" class="icon-btn" style="position:static"
+                aria-label="Schliessen">✖</button>
+        </header>
+
+        <form id="profileForm" class="form" novalidate>
+            <input type="hidden" id="profileId">
+
+            <div class="field">
+                <label for="profileName">Name</label>
+                <input id="profileName" type="text" placeholder="z.B. Anna" required />
+            </div>
+
+            <div class="field">
+                <label>Farbe</label>
+                <div id="colorGrid" class="color-grid" role="radiogroup" aria-label="Profilfarbe wählen">
+                    <!-- 9 distinct colors -->
+                    <button type="button" class="color-swatch" data-color="#EF4444" role="radio" aria-checked="false"
+                        title="Rot"></button>
+                    <button type="button" class="color-swatch" data-color="#F59E0B" role="radio" aria-checked="false"
+                        title="Orange"></button>
+                    <button type="button" class="color-swatch" data-color="#84CC16" role="radio" aria-checked="false"
+                        title="Lime"></button>
+                    <button type="button" class="color-swatch" data-color="#10B981" role="radio" aria-checked="false"
+                        title="Grün"></button>
+                    <button type="button" class="color-swatch" data-color="#14B8A6" role="radio" aria-checked="false"
+                        title="Türkis"></button>
+                    <button type="button" class="color-swatch" data-color="#3B82F6" role="radio" aria-checked="true"
+                        title="Blau"></button>
+                    <button type="button" class="color-swatch" data-color="#8B5CF6" role="radio" aria-checked="false"
+                        title="Violett"></button>
+                    <button type="button" class="color-swatch" data-color="#EC4899" role="radio" aria-checked="false"
+                        title="Pink"></button>
+                    <button type="button" class="color-swatch" data-color="#F97316" role="radio" aria-checked="false"
+                        title="Amber"></button>
+                </div>
+            </div>
+
+            <div class="login-actions" style="justify-content:flex-end">
+                <button type="submit" id="saveProfileBtn" class="login-btn login-btn--primary">Speichern</button>
+            </div>
+
+            <p id="profileFormMsg" class="feedback-msg" aria-live="polite"></p>
+        </form>
+    </aside>
 </div>
 
 <div id="dataOverlay" class="data-overlay" style="display: none;">

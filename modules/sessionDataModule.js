@@ -39,3 +39,40 @@ export const sessionDataModule = {
         }
     }
 };
+
+// sessionDataModule.js
+const STORAGE_KEY = 'profiles';
+
+export function getProfiles() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  try { return raw ? JSON.parse(raw) : []; } catch { return []; }
+}
+
+function persist(profiles) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles));
+}
+
+export function createProfile({ name, color }) {
+  const profiles = getProfiles();
+  const now = new Date().toISOString();
+  const id = crypto?.randomUUID ? crypto.randomUUID() : String(Date.now());
+  const profile = { id, name: name?.trim() || 'Unnamed', color: color || '#888888', createdAt: now };
+  profiles.push(profile);
+  persist(profiles);
+  return profile;
+}
+
+export function updateProfile(id, patch) {
+  const profiles = getProfiles();
+  const idx = profiles.findIndex(p => p.id === id);
+  if (idx === -1) return null;
+  profiles[idx] = { ...profiles[idx], ...patch };
+  persist(profiles);
+  return profiles[idx];
+}
+
+export function deleteProfile(id) {
+  const profiles = getProfiles().filter(p => p.id !== id);
+  persist(profiles);
+  return profiles;
+}

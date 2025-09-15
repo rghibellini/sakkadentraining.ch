@@ -14,7 +14,6 @@ export const profileModule = {
             const response = await fetch(url);
             const data = await response.json();
             if (data.success) {
-                this.updateProfileList(data.profiles);
                 return data.profiles;
             } else {
                 console.error('Error loading profiles:', data.message);
@@ -24,24 +23,6 @@ export const profileModule = {
             console.error('Error fetching profiles:', error);
             return [];
         }
-    },
-
-    /**
-     * Updates the profile list in the UI with fetched profiles.
-     * @param {Array} profiles - Array of profile objects.
-     */
-    updateProfileList(profiles) {
-        const profileList = document.getElementById('profileList');
-        if (!profileList) return;
-
-        profileList.innerHTML = '';
-        profiles.forEach(profile => {
-            const li = document.createElement('li');
-            li.textContent = profile.name;
-            li.addEventListener('click', () => this.selectProfile(profile));
-            profileList.appendChild(li);
-        });
-        profileList.style.display = profiles.length > 0 ? 'block' : 'none';
     },
 
     /**
@@ -208,4 +189,36 @@ export const profileModule = {
         document.body.appendChild(feedbackElement);
         setTimeout(() => feedbackElement.remove(), 2000);
     }
+};
+
+// Add this at the very end of modules/profileModule.js
+profileModule.createProfileWithColor = async function(name, color) {
+  try {
+    // deep copy defaults (same pattern you use in createProfile)
+    const settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+
+    const response = await fetch('profiles/save_profile.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, color, settings })
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      this.selectedProfile = data.profile;
+      this.showFeedback(`Profil "${name}" erstellt und ausgewählt`, 'green');
+      await settingsModule.loadSettings(data.profile.id);
+      settingsModule.applySettingsToUI();
+      await this.loadProfiles();
+      return data.profile;
+    } else {
+      console.error('Fehler beim Erstellen des Profils:', data.message);
+      this.showFeedback('Fehler beim Erstellen des Profils', 'red');
+      return null;
+    }
+  } catch (err) {
+    console.error('Fehler beim Erstellen des Profils:', err);
+    this.showFeedback('Fehler beim Erstellen des Profils', 'red');
+    return null;
+  }
 };

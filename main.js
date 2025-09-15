@@ -19,6 +19,7 @@ import { userInteractionModule } from './modules/userInteractionModule.js';
 import { initDataInterface } from './modules/dataInterfaceModule.js';
 import { uiModule } from './modules/uiModule.js';
 import { soundModule } from './modules/soundModule.js';
+import { initProfileOverlay } from './modules/userInteractionModule.js';
 
 let currentModeInstance = null;
 let isGameActive = false;
@@ -47,12 +48,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextStep = document.getElementById('nextStep');
     const dataBtn = document.getElementById('dataBtn');
     logoutBtn = document.getElementById('logoutBtn');
-    const openProfilePanel = document.getElementById('openProfilePanel');
     const closeProfilePanel = document.getElementById('closeProfilePanel');
-    const profilePanel = document.getElementById('profilePanel');
-    const profileSearchInput = document.getElementById('profileSearchInput');
-    const profileListContainer = document.getElementById('profileListContainer');
-    const addProfileBtn = document.getElementById('addProfileBtn');
+    const profilePanel = document.getElementById('profileOverlay');
+
+    const profileDrawer = document.getElementById('profileDrawer');
+    const profileForm = document.getElementById('profileForm');
+    const profileNameInput = document.getElementById('profileName');
+    const colorGrid = document.getElementById('colorGrid');
+    const closeDrawerBtn = document.getElementById('closeDrawerBtn'); // if you have an X in the drawer
+
+    initProfileOverlay();
+
+    if (colorGrid) {
+        colorGrid.querySelectorAll('.color-swatch').forEach(btn => {
+            const hex = btn.getAttribute('data-color');
+            if (hex) btn.style.background = hex;
+            btn.addEventListener('click', () => {
+                colorGrid.querySelectorAll('.color-swatch').forEach(b => {
+                    b.setAttribute('aria-checked', b === btn ? 'true' : 'false');
+                    b.style.borderColor = (b === btn) ? 'var(--text, #111827)' : 'transparent';
+                });
+            });
+        });
+    }
 
     if (sessionStorage.getItem('playLoginSound') === 'true') {
         const loginSound = new Audio('sounds/login.mp3');
@@ -164,58 +182,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (openProfilePanel) {
-        openProfilePanel.addEventListener('click', () => {
-            profilePanel.style.display = 'flex';
-            loadAndRenderProfiles();
-        });
-    }
-
-    if (profileSearchInput) {
-        profileSearchInput.addEventListener('input', () => {
-            loadAndRenderProfiles(profileSearchInput.value.trim());
-        });
-    }
-
     if (addProfileBtn) {
-        addProfileBtn.addEventListener('click', async () => {
-            const name = prompt('Neues Profil:');
-            if (name?.trim()) {
-                await profileModule.createProfile(name.trim());
-                loadAndRenderProfiles();
+        addProfileBtn.addEventListener('click', () => {
+            // open overlay (already opened by openProfilePanel), now open drawer
+            if (profileDrawer) profileDrawer.style.display = 'block';
+            if (profileNameInput) profileNameInput.value = '';
+
+            // reset color selection: remove all checks, then select the default
+            if (colorGrid) {
+                colorGrid.querySelectorAll('.color-swatch').forEach(btn => {
+                    btn.setAttribute('aria-checked', 'false');
+                    btn.style.borderColor = 'transparent';
+                });
+                const defaultBtn = colorGrid.querySelector('.color-swatch[aria-checked="true"]')
+                    || colorGrid.querySelector('.color-swatch[data-color="#3B82F6"]');
+                if (defaultBtn) {
+                    defaultBtn.setAttribute('aria-checked', 'true');
+                    defaultBtn.style.borderColor = 'var(--text, #111827)';
+                }
             }
-        });
-    }
 
-    async function loadAndRenderProfiles(filter = '') {
-        const profiles = await profileModule.loadProfiles(filter);
-        profileListContainer.innerHTML = '';
-        profiles.forEach(p => {
-            const li = document.createElement('li');
-            li.classList.add('profile-item');
-            li.innerHTML = `
-            <span>${p.name}</span>
-            <span>
-                <button title="Profil löschen">✖</button>
-            </span>
-            `;
-            li.addEventListener('click', async () => {
-                profileModule.selectProfile(p);
-                profilePanel.style.display = 'none';
+            // clear any "edit mode" id we might store on the form dataset
+            if (profileForm) {
+                profileForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const name = (profileNameInput?.value || '').trim();
+                    const color = colorGrid?.querySelector('.color-swatch[aria-checked="true"]')?.getAttribute('data-color');
 
-                const activeProfile = document.getElementById('activeProfile');
-                if (activeProfile) {
-                    activeProfile.textContent = `Profil: ${p.name}`;
-                }
-            });
-            li.querySelector('button').addEventListener('click', async (e) => {
-                e.stopPropagation();
-                if (confirm(`Profil "${p.name}" wirklich löschen?`)) {
-                    await profileModule.deleteProfile(p.id);
-                    loadAndRenderProfiles(filter);
-                }
-            });
-            profileListContainer.appendChild(li);
+                    if (!name) { alert('Bitte einen Namen eingeben.'); return; }
+                    if (!color) { alert('Bitte eine Farbe wählen.'); return; }
+
+                    const editId = profileForm.dataset.editId; // we set this in the edit flow
+                    if (editId) {
+                        await profileModule.saveProfile({ id: editId, name, color });
+                    } else {
+                        await profileModule.createProfileWithColor(name, color);
+                    }
+
+                    if (profileDrawer) profileDrawer.style.display = 'none';
+                });
+            }
+
+            // focus name
+            if (profileNameInput) profileNameInput.focus();
         });
     }
 
